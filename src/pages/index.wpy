@@ -1,0 +1,42 @@
+<style lang="less">
+  .login-container{
+  }
+</style>
+<template>
+  <view class="login-container">
+    登录
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '@/api/api'
+  export default class Index extends wepy.page {
+    config = {
+    }
+    components = {
+    }
+
+    data = {
+    }
+
+    async getWeather() {
+      let json = await api.getWeather({
+        query: {
+          location:'beijing',
+          lang: 'en',
+          key: '044ffaa038cf4502a6972a0e81e5b65e',
+          unit: 'i'
+        }
+      });
+      console.log(json);
+    }
+
+    methods = {
+      
+    }
+
+    onLoad() {
+    }
+  }
+</script>

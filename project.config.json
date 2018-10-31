@@ -1,0 +1,55 @@
+{
+	"description": "warm tip",
+	"setting": {
+		"urlCheck": false,
+		"es6": false,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true,
+		"nodeModules": true
+	},
+	"compileType": "miniprogram",
+	"appid": "wx5e2758ac42a14693",
+	"projectname": "meeting",
+	"miniprogramRoot": "dist/",
+	"libVersion": "2.3.0",
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"list": []
+		},
+		"miniprogram": {
+			"current": 2,
+			"list": [
+				{
+					"id": -1,
+					"name": "select_entry",
+					"pathName": "pages/select_entry",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "edit_info",
+					"pathName": "pages/edit_info",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "jobList",
+					"pathName": "pages/job_list"
+				}
+			]
+		}
+	}
+}

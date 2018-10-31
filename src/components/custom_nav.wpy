@@ -1,0 +1,81 @@
+<style type="less">
+  .custom-nav-container{
+    background: linear-gradient(#2364A6, #0A4C90);
+    width: 100%;
+    .statusBar{
+      height: 40rpx;
+    }
+    .title{
+      text-align: center;
+      color: #fff;
+      font-size: 36rpx;
+      position: relative;
+      &.android{
+        height: 96rpx;
+        line-height: 96rpx;
+      }
+      &.ios{
+        height: 88rpx;
+        line-height: 88rpx;
+      }
+      .title__back{
+        width: 90rpx;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        image{
+          width: 20rpx;
+          height: 36rpx;
+          margin-top: 50%;
+          margin-left: 50%;
+          transform: translate(-50%,-50%);
+        }
+      }
+      
+    }
+  }
+</style>
+<template>
+  <view class="custom-nav-container">
+    <view class="statusBar"></view>
+    <view class="title {{isAndroid?'android':'ios'}}">
+      <view class="title__back" @tap="goBack" wx:if="{{canGoback == 1}}">
+       <image src="../images/icon-go-back.png"/>
+      </view>
+      <text>{{title}}</text>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class CustomNav extends wepy.component {
+    props = {
+      title: String,
+      canGoback: String,
+      obj:{}
+    }
+
+    components = {
+    }
+
+    data = {
+      isAndroid: true
+    }
+
+    methods = {
+      /**
+       * 返回
+       */
+      goBack(){
+        wx.navigateBack();
+      }
+    }
+
+    onLoad(){  
+      console.log(this.obj);
+          
+    }
+  }
+</script>
