@@ -11,6 +11,8 @@
 <script>
   import wepy from 'wepy'
   import api from '@/api/api'
+  import { getStore, connect } from 'wepy-redux'
+  const store = getStore()
   export default class Index extends wepy.page {
     config = {
     }

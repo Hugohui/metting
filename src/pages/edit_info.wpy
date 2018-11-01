@@ -11,7 +11,7 @@ page{
     .custom-nav-container{
       background: linear-gradient(#2364A6, #0A4C90);
       width: 100%;
-      height: 130rpx;
+      min-height: 138rpx;
       position: fixed;
       top: 0;
       left: 0;
@@ -24,14 +24,6 @@ page{
         color: #fff;
         font-size: 36rpx;
         position: relative;
-        &.android{
-          height: 96rpx;
-          line-height: 96rpx;
-        }
-        &.ios{
-          height: 88rpx;
-          line-height: 88rpx;
-        }
         .title__back{
           width: 90rpx;
           height: 100%;
@@ -146,15 +138,15 @@ page{
 <template>
   <view class="index-container">
     <view class="custom-nav-container">
-      <view class="statusBar" style="height:{{statusBarHeight*pixelRatio}}rpx"></view>
-      <view class="title {{isAndroid?'android':'ios'}}">
+      <view class="statusBar" style="height:{{statusBarHeight*pixel}}rpx"></view>
+      <view class="title" style="height:{{navHeight}}rpx;line-height:{{navHeight}}rpx">
         <view class="title__back" @tap="goBack">
           <image src="../images/icon-go-back.png"/>
         </view>
-        <text>基本信息</text>
+        <text>求职岗位</text>
       </view>
     </view>
-    <view class="wrap" style="padding-top:{{(statusBarHeight*pixelRatio)+marginTop}}rpx">
+    <view class="wrap" style="padding-top:{{(statusBarHeight*pixel)+navHeight}}rpx">
       <view class="content">
        <view class="header">
          <view class="head">
@@ -252,6 +244,7 @@ page{
   // import customNav from '@/components/custom_nav'
   import { getStore, connect } from 'wepy-redux'
   const store = getStore()
+  const state = store.getState()
 
   export default class SelectEntry extends wepy.page {
     config = {
@@ -261,11 +254,9 @@ page{
     }
 
     data = {
-      isAndroid: store.getState().system.systemInfo.platform == 'android',
-      statusBarHeight: store.getState().system.systemInfo.statusBarHeight,
-      pixelRatio: 2,
-      marginTop: store.getState().system.systemInfo.platform == 'android'? 96 : 88,
-      canGoback: true,
+      statusBarHeight: state.system.systemInfo.statusBarHeight,
+      pixel: state.system.pixel,
+      navHeight: state.system.navHeight,
       enter_type: 0,
       sixArr:['男','女']
     }

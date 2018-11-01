@@ -27,6 +27,7 @@ export default class extends wepy.app {
       'pages/select_entry',
       'pages/edit_info',
       'pages/job_list',
+      'pages/mine',
     ],
     window: {
       backgroundTextStyle: 'light',
