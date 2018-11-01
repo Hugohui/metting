@@ -1,9 +1,11 @@
 import wepy from 'wepy';
 const SET_SYSTEM = 'SET_SYSTEM';
 let systemInfo = wx.getSystemInfoSync();
+let pixel = 750/systemInfo.windowWidth;
 
 const initState = {
-  systemInfo:systemInfo
+  systemInfo:systemInfo,
+  pixel: pixel
 }
 
 export function systemReducer(state = initState, action) {
