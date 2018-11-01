@@ -108,7 +108,7 @@ page{
 <template>
   <view class="index-container">
     <view class="custom-nav-container">
-      <view class="statusBar" style="height:{{statusBarHeight*pixelRatio}}rpx"></view>
+      <view class="statusBar" style="height:{{statusBarHeight*pixel}}rpx"></view>
       <view class="title {{isAndroid?'android':'ios'}}">
         <view class="title__back" @tap="goBack" wx:if="{{canGoback}}">
           <image src="../images/icon-go-back.png"/>
@@ -116,7 +116,7 @@ page{
         <text></text>
       </view>
     </view>
-    <view class="wrap" style="padding-top:{{(statusBarHeight*pixelRatio)+marginTop}}rpx">
+    <view class="wrap" style="padding-top:{{(statusBarHeight*pixel)+marginTop}}rpx">
       <view class="content">
         <view class="section interviewer" @tap.stop="selectEntry" data-index="0">
           <view class="head">
@@ -158,8 +158,8 @@ page{
     data = {
       isAndroid: store.getState().system.systemInfo.platform == 'android',
       statusBarHeight: store.getState().system.systemInfo.statusBarHeight,
-      pixelRatio: 2,
-      marginTop: store.getState().system.systemInfo.platform == 'android'? 96 : 88,
+      pixel: store.getState().system.pixel,
+      marginTop: store.getState().system.navHeight
       canGoback: false,
       currentIndex: 'no'
     }
