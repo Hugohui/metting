@@ -11,7 +11,7 @@ page{
     .custom-nav-container{
       background: linear-gradient(#2364A6, #0A4C90);
       width: 100%;
-      min-height: 138rpx;
+      // min-height: 140rpx;
       position: fixed;
       top: 0;
       left: 0;
@@ -137,6 +137,7 @@ page{
           </view>
         </view>
       </view>
+      <!-- <cancle-candidate/> -->
     </view>
   </view>
 </template>
@@ -144,6 +145,7 @@ page{
 <script>
   import wepy from 'wepy'
   import api from '@/api/api'
+  // import CancleCandidate from '@/components/cancle_candidate'
   // import customNav from '@/components/custom_nav'
   import { getStore, connect } from 'wepy-redux'
   const store = getStore()
@@ -154,21 +156,14 @@ page{
     config = {
     }
     components = {
-      // 'custom-nav': customNav
+      // 'custom-nav': customNav,
+      // 'cancle-candidate':CancleCandidate
     }
 
     data = {
-<<<<<<< Updated upstream
-      isAndroid: store.getState().system.systemInfo.platform == 'android',
-      statusBarHeight: store.getState().system.systemInfo.statusBarHeight,
-      pixel: store.getState().system.pixel,
-      marginTop: store.getState().system.navHeight
-      canGoback: false,
-=======
       statusBarHeight: state.system.systemInfo.statusBarHeight,
       pixel: state.system.pixel,
       navHeight: state.system.navHeight,
->>>>>>> Stashed changes
       currentIndex: 'no'
     }
 

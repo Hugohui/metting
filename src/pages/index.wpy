@@ -1,10 +1,193 @@
 <style lang="less">
+page{
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
   .login-container{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    &>image{
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .wrap{
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      overflow: hidden;
+      .form{
+        font-family: PingFangSC;
+        width: 540rpx;
+        margin: 397rpx auto 0 auto;
+        .phone{
+          margin-bottom: 50rpx;
+        }
+        .pd{
+          margin-bottom: 45rpx;
+        }
+        .placeholder{
+          color: #ccc;
+        }
+        .input_view{
+          height: 82rpx;
+          border-bottom: 2rpx solid #FFF;
+          padding: 17rpx 0;
+          box-sizing: border-box;
+          display: flex;
+          font-size: 34rpx;
+          position: relative;
+          input{
+            color: #CCC;
+            height: 100%;
+            margin-top: -2rpx;
+          }
+          .phone__left{
+            width: 108rpx;
+            color: #FFF;
+            position: relative;
+            &>.line{
+              width: 0;
+              height: 37rpx;
+              border: 2rpx solid #FFF;
+              position: absolute;
+              right: 0;
+              top: 4rpx;
+            }
+          }
+          .phone__right{
+            flex: 1;
+            color: #CCC;
+            padding-left: 30rpx;
+            box-sizing: border-box;
+            position: relative;
+          }
+          image{
+            width: 40rpx;
+            height: 40rpx;
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            margin-top: -2rpx;
+            &.eye{
+              width: 40rpx;
+              height: 32rpx;
+            }
+          }
+        }
+        .operator{
+          height: 75rpx;
+          line-height: 75rpx;
+          overflow: hidden;
+          &>view{
+            width: 140rpx;
+            font-size: 26rpx;
+            float: right;
+            text-align: right;
+            &.select_country{
+              color: #ccc;
+            }
+            &.miss_pd{
+              color: #5DB2FF;
+            }
+          }
+        }
+        .login{
+          width: 541rpx;
+          height: 88rpx;
+          line-height: 88rpx;
+          text-align: center;
+          border-radius: 44rpx;
+          color: #FFF;
+          margin-bottom: 50rpx;
+          font-size: 34rpx;
+          &.phone_login{
+            background-image: linear-gradient(0deg, #0A4C90 0%, #2364A6 100%);
+          }
+          &.wx_login{
+            overflow: hidden;
+            button{
+              width: 100%;
+              height: 100%;
+              line-height: 88rpx;
+              background: linear-gradient(0deg, #E91216 0%, #F44346 100%);
+              color: #fff;
+              font-size: 34rpx;
+              &::after{
+                border: none;
+                border-radius: 0;
+                background: none;
+              }
+            }
+          }
+        }
+      }
+      .register_btn{
+        position: absolute;
+        left: 50%;
+        bottom: 30rpx;
+        transform: translateX(-50%);
+        width: 230rpx;
+        height: 55rpx;
+        text-align: center;
+        line-height: 55rpx;
+        border: 2rpx solid #57B5FF;
+        border-radius: 28rpx;
+        color: #57B5FF;
+        font-size: 28rpx;
+      }
+    }
   }
+}
 </style>
 <template>
   <view class="login-container">
-    登录
+    <image src="../images/icon-login-bg.png"/>
+    <view class="wrap">
+      <view class="form">
+        <view class="phone">
+          <view class="input_view">
+            <view class="phone__left">{{areaCodeArr[areaIndex].code}}<view class="line"></view></view>
+            <view class="phone__right">
+              <input placeholder="请输入{{areaCodeArr[areaIndex].phoneLength}}位手机号" placeholder-class="placeholder"/>
+              <image src="../images/icon-reset-phone.png"/>
+            </view>
+          </view>
+          <view class="operator">
+            <view class="select_country">
+              <view class="section">
+                <picker bindchange="bindPickerChange" value="{{areaIndex}}" range="{{areaArr}}">
+                  <view class="picker">
+                    {{areaCodeArr[areaIndex].name}}>
+                  </view>
+                </picker>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="pd">
+          <view class="input_view">
+            <input placeholder="请输入密码" placeholder-class="placeholder" password="{{isPassword}}"/>
+            <image class="eye" src="{{isPassword?'../images/icon-pd-visible.png':'../images/icon-pd-invisible.png'}}" @tap="toggleVisible"/>            
+          </view>
+          <view class="operator">
+            <view class="miss_pd">忘记密码</view>
+          </view>
+        </view>
+        <view class="login phone_login" @tap="phoneLogin">登录</view>
+        <view class="login wx_login">
+          <button open-type="getUserInfo" lang="zh_CN" bindgetuserinfo="authorizeLogin">微信用户快捷登录</button>
+        </view>
+      </view>
+      <view class="register_btn" @tap="goRegister">在线快捷注册</view>
+    </view>
   </view>
 </template>
 
@@ -20,6 +203,10 @@
     }
 
     data = {
+      isPassword: true,
+      areaArr: ['+852 中国香港','+86 中国大陆','+886 中国台湾'],
+      areaCodeArr: [{code:'+852',name:'中国香港',phoneLength:11},{code:'+86',name:'中国大陆',phoneLength:11},{code:'+886',name:'中国台湾',phoneLength:8}],
+      areaIndex: 1
     }
 
     async getWeather() {
@@ -35,7 +222,46 @@
     }
 
     methods = {
-      
+      /**
+       * 微信登录
+       */
+      authorizeLogin(e){
+        if(e.detail.userInfo){
+          this.loginCallback();
+        }
+      },
+      /**
+       * 手机号登录
+       */
+      phoneLogin(){
+        this.loginCallback();
+      },
+      /**
+      * 密码现实切换
+      */
+      toggleVisible(){
+        this.isPassword = !this.isPassword;
+      },
+      /**
+      * 区域选择器 
+      */
+      bindPickerChange(e){
+        this.areaIndex = e.detail.value;
+      },
+      /**
+      * 跳转到注册页
+      */
+      goRegister(){
+        wx.navigateTo({
+          url: './register'
+        });
+      }
+    }
+
+    loginCallback(){
+      wx.navigateTo({
+        url: './select_entry'
+      });
     }
 
     onLoad() {

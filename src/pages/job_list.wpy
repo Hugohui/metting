@@ -11,7 +11,7 @@ page{
     .custom-nav-container{
       background: linear-gradient(#2364A6, #0A4C90);
       width: 100%;
-      min-height: 138rpx;
+      min-height: 140rpx;
       position: fixed;
       top: 0;
       left: 0;
@@ -108,11 +108,8 @@ page{
       <view class="content">
         <view class="items">
           <repeat wx:for="{{15}}" wx:key="index">
-            <view class="item">CFO<image src="../images/icon-arrow-right.png"/></view>
+            <view class="item" @tap="goDateBook">CFO<image src="../images/icon-arrow-right.png"/></view>
           </repeat>
-          <view class="item">CFO<image src="../images/icon-arrow-right.png"/></view>
-          <view class="item">CFO<image src="../images/icon-arrow-right.png"/></view>
-          <view class="item">UI设计师<image src="../images/icon-arrow-right.png"/></view>
         </view>
         <view class="no_job">没有啦</view>
       </view>
@@ -159,6 +156,14 @@ page{
         this.currentIndex = e.currentTarget.dataset.index;
         wx.navigateTo({
           url: './edit_info?enter_type=' + this.currentIndex
+        });
+      },
+      /**
+       * 到时间预约
+       */
+      goDateBook(){
+        wx.navigateTo({
+          url: './mine?identity=interviewer'
         });
       }
       
