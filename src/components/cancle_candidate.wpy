@@ -1,0 +1,112 @@
+<style type="less">
+ .cancle_candidate_container{
+   width: 100%;
+   height: 100%;
+   background: rgba(0,0,0,.5);
+   font-family: PingFangSC-Regular;
+   overflow: hidden;
+   position: fixed;
+   top: 0;
+   left: 0;
+   .dialog-content{
+     width: 587rpx;
+     padding: 35rpx 25rpx 84rpx 29rpx;
+     box-sizing: border-bpx;
+     background: #fff;
+     margin: 405rpx auto;
+     border-radius: 16rpx;
+     position: relative;
+     .title{
+        font-size: 36rpx;
+        color: #000;
+        margin-bottom: 24rpx;
+        text-align: center;
+     }
+     .body{
+       font-size: 30rpx;
+       color: #888888;
+       .reason{
+         position: relative;
+         box-sizing: border-box;
+         padding-left: 68rpx;
+         margin-bottom: 38rpx;
+         &>image{
+           width: 50rpx;
+           height: 50rpx;
+           position: absolute;
+           top: 0;
+           left: 0;
+           margin-top: -4rpx;
+         }
+       }
+     }
+     .footer{
+       width: 100%;
+       height: 84rpx;
+       line-height: 84rpx;
+       text-align: center;
+       font-size: 36rpx;
+       color: #02BB00;
+       position: absolute;
+       bottom: 0;
+       left: 0;
+       border-top: 1rpx solid #E5E5E5;
+     }
+   }
+ }
+</style>
+<template>
+  <view class="cancle_candidate_container" wx:if="{{isShow}}">
+    <view class="dialog-content">
+      <view class="title">请给出取消面试原因</view>
+      <view class="body">
+        <view class="reason" @tap="chooseReason" data-index="0">
+          <image src="{{currentReasonIndex == 0?'../images/icon-checked.png':'../images/icon-uncheck.png'}}"/>
+          1，临时会议安排，联系顾问
+        </view>
+        <view class="reason" @tap="chooseReason" data-index="1">
+          <image src="{{currentReasonIndex == 1?'../images/icon-checked.png':'../images/icon-uncheck.png'}}"/>
+          2，不想参加面试，联系顾问
+        </view>
+        <view class="reason" @tap="chooseReason" data-index="2">
+          <image src="{{currentReasonIndex == 2?'../images/icon-checked.png':'../images/icon-uncheck.png'}}"/>
+          3，给出我的空余时间
+        </view>
+      </view>
+      <view class="footer" @tap="confirmReason">确定</view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class CancleCandidate extends wepy.component {
+    props = {
+      
+    }
+
+    components = {
+    }
+
+    data = {
+      currentReasonIndex: 'no',
+      isShow: false
+    }
+
+    methods = {
+     setData(data){
+     },
+     chooseReason(e){
+       this.currentReasonIndex = e.currentTarget.dataset.index;
+       
+     },
+     confirmReason(){
+       this.isShow = false
+       console.log('currentReasonIndex===='+this.currentReasonIndex);
+     }
+    }
+
+    onLoad(){
+    }
+  }
+</script>

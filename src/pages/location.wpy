@@ -1,0 +1,193 @@
+<style lang="less">
+page{
+  width: 100%;
+  height: 100%;
+  font-family: PingFangSC-Regular;
+  overflow: hidden;
+}
+  .index-container{
+    width: 100%;
+    height: 100%;
+    .custom-nav-container{
+      background: linear-gradient(#2364A6, #0A4C90);
+      width: 100%;
+      min-height: 138rpx;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      .statusBar{
+        height: 40rpx;
+      }
+      .title{
+        text-align: center;
+        color: #fff;
+        font-size: 36rpx;
+        position: relative;
+        .title__back{
+          width: 90rpx;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          image{
+            width: 20rpx;
+            height: 36rpx;
+            margin-top: 50%;
+            transform: translate(-50%,-50%);
+          }
+        }
+        
+      }
+    }
+    .wrap{
+      min-height: 100%;
+      background: #EFEFF4;
+      .content{
+        padding: 10rpx 15rpx;
+        background-color: #fff;
+        box-sizing: border-box;
+        .seach{
+          width: 100%;
+          height: 70rpx;
+          line-height: 70rpx;
+          background-color: #EEE;
+          border-radius: 10rpx;
+          display: flex;
+          font-size: 30rpx;
+          padding: 0 23rpx;
+          box-sizing: border-box;
+          .country{
+            width: 130rpx;
+            image{
+              width: 24rpx;
+              height: 12rpx;
+              margin-left: 24rpx;
+              vertical-align: middle;
+            }
+          }
+          .input{
+            flex: 1;
+            color: #999;
+            image{
+              width: 29rpx;
+              height: 29rpx;
+              margin-top: -4rpx;
+              vertical-align: middle;
+            }
+          }
+        }
+        .current-location{
+          margin-top: 24rpx;
+          color: #353535;
+          font-size: 30rpx;
+          .title{
+            color: #999;
+          }
+          .location{
+            margin: 15rpx 0;
+            .re-locate{
+              width: 150rpx;
+              text-align: right;
+              float: right;
+              color: #2871FF;
+              image{
+                width: 26rpx;
+                height: 26rpx;
+                margin-right: 10rpx;
+                vertical-align: middle;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <view class="index-container">
+    <view class="custom-nav-container">
+      <view class="statusBar" style="height:{{statusBarHeight*pixel}}rpx"></view>
+      <view class="title" style="height:{{navHeight}}rpx;line-height:{{navHeight}}rpx">
+        <view class="title__back" @tap="goBack">
+          <image src="../images/icon-go-back.png"/>
+        </view>
+        <text>位置</text>
+      </view>
+    </view>
+    <view class="wrap" style="padding-top:{{(statusBarHeight*pixel)+navHeight}}rpx">
+      <view class="content">
+        <view class="seach">
+          <view class="country">香港<image src="../images/icon-arrow-down.png"/></view>
+          <view class="input">
+            <image src="../images/icon-seach.png"/>
+            写字楼/小区等
+          </view>
+        </view>
+        <view class="current-location">
+          <view class="title">当前位置</view>
+          <view class="location">我是当时定位的公司地址
+            <view class="re-locate" @tap="chooseLocation"><image src="../images/icon-locate.png"/>重新定位</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '@/api/api'
+  // import customNav from '@/components/custom_nav'
+  import { getStore, connect } from 'wepy-redux'
+  const store = getStore()
+  const state = store.getState()
+
+  export default class Location extends wepy.page {
+    config = {
+    }
+    components = {
+      // 'custom-nav': customNav
+    }
+
+    data = {
+      statusBarHeight: state.system.systemInfo.statusBarHeight,
+      pixel: state.system.pixel,
+      navHeight: state.system.navHeight,
+      currentIndex: 'no'
+    }
+
+    async getWeather() {
+      let json = await api.getWeather({
+        query: {
+          location:'beijing',
+          lang: 'en',
+          key: '044ffaa038cf4502a6972a0e81e5b65e',
+          unit: 'i'
+        }
+      });
+      console.log(json);
+    }
+
+    methods = {
+      selectEntry(e){
+        this.currentIndex = e.currentTarget.dataset.index;
+        wx.navigateTo({
+          url: './edit_info?enter_type=' + this.currentIndex
+        });
+      },
+      chooseLocation(){
+        console.log('chooseLocation');
+        wx.chooseLocation({
+          success:(res)=>{
+            console.log(res);
+          }
+        });
+      }
+      
+    }
+
+    onLoad() {
+    }
+  }
+</script>

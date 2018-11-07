@@ -1,0 +1,74 @@
+<style type="less">
+ .mine_job_list_container{
+   width: 100%;
+   .items{
+     .item{
+       height: 170rpx;
+       position: relative;
+       margin-top:10rpx;
+       background-color: #fff;
+       padding: 27rpx 30rpx;
+       box-sizing: border-box;
+       .job{
+         height: 64rpx;
+         line-height: 64rpx;
+         font-size: 34rpx;
+         color: #222;
+       }
+       .company{
+         height: 53rpx;
+         line-height: 53rpx;
+         font-size: 26rpx;
+         color: #999;
+       }
+       image{
+         position: absolute;
+         top: 50%;
+         right: 30rpx;
+         width: 16rpx;
+         height: 26rpx;
+         transform: translateY(-50%);
+       }
+     }
+   }
+ }
+</style>
+<template>
+  <view class="mine_job_list_container">
+    <view class="items">
+      <repeat wx:for="{{jobList}}" wx:key="index">
+        <view class="item">
+          <view class="job">CFO</view>
+          <view class="company">我是某某公司的全称名称</view>
+          <image src="../images/icon-arrow-right.png"/>
+        </view>
+      </repeat>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class MineJobList extends wepy.component {
+    props = {
+      
+    }
+
+    components = {
+    }
+
+    data = {
+      jobList: [1,2,3]
+    }
+
+    methods = {
+     setData(data){
+       this.jobList = [1,2,3]
+     }
+    }
+
+    onLoad(){  
+      console.log(this.jobList)
+    }
+  }
+</script>
