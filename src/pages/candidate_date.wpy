@@ -1,0 +1,390 @@
+<style lang="less">
+page{
+  width: 100%;
+  height: 100%;
+  font-family: 'PingFangSC-Semibold';
+}
+  .candidate-date-container{
+    width: 100%;
+    height: 100%;
+    .custom-nav-container{
+      background: linear-gradient(#2364A6, #0A4C90);
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      .statusBar{
+        height: 40rpx;
+      }
+      .title{
+        text-align: center;
+        color: #fff;
+        font-size: 36rpx;
+        position: relative;
+        .title__back{
+          width: 90rpx;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          image{
+            width: 20rpx;
+            height: 36rpx;
+            margin-top: 50%;
+            transform: translate(-50%,-50%);
+          }
+        }
+        
+      }
+    }
+    .wrap{
+      min-height: 100%;
+      background: #EFEFF4;
+      .content{
+        height: 100%;
+        .basic-info{
+          background-color: #fff;
+          padding: 6rpx 0 6rpx 30rpx;
+          box-sizing: border-box;
+          font-size: 34rpx;
+          .item{
+            height: 88rpx;
+            line-height: 88rpx;
+            border-bottom: 2rpx solid #E5E5E5;
+            display: flex;
+            &:nth-last-child(1){
+              border: none;
+            }
+            &>view{
+              &.title{
+                width: 180rpx;
+              }
+              &.desc{
+                flex: 1;
+                color: #B2B2B2;
+              }
+            }
+          }
+        }
+        .select-time{
+          margin-top: 10rpx;
+          background-color: #FFF;
+          padding: 12rpx 24rpx 0 24rpx;
+          .title{
+            text-align: center;
+            font-size: 34rpx;
+            margin-bottom: 16rpx;
+          }
+          .status{
+            margin-top: 36rpx;
+            padding: 0 177rpx;
+            box-sizing: border-box;
+            display: flex;
+            font-size: 28rpx;
+            color: #B2B2B2;
+            &>view{
+              flex: 1;
+              height: 40rpx;
+              .color{
+                width: 31rpx;
+                height: 31rpx;
+                border: 2rpx solid #999;
+                border-radius: 4rpx;
+                display: inline-block;
+                box-sizing: border-box;
+                margin-right: 7rpx;
+                vertical-align: middle;
+                margin-top: -6rpx;
+                &.first{
+                  background-color: #eee;
+                  border-color: #eee;
+                }
+                &.last{
+                  background-color: #ED2529;
+                  border-color: #ED2529;
+                }
+              }
+            }
+          }
+          .week{
+            margin-top: 67rpx;
+            .header{
+              display: flex;
+              justify-content: space-between;
+              padding-bottom: 60rpx;
+              &>view{
+                flex: 1;
+                text-align: center;
+                font-size: 32rpx;
+                color: #999;
+                position: relative;
+                &.active{
+                  color: #145699;
+                }
+                .arrow_down{
+                  width: 35rpx;
+                  height: 17rpx;
+                  position: absolute;
+                  left: 50%;
+                  transform: translateX(-50%);
+                  image{
+                    width: 100%;
+                    height: 100%;
+                  }
+                }
+              }
+            }
+            .body{
+              display: flex;
+              justify-content: space-between;
+              flex-wrap: wrap;
+              &>view{
+                width: 157rpx;
+                height: 80rpx;
+                border: 2rpx solid #979797;
+                margin-bottom: 20rpx;
+                line-height: 80rpx;
+                text-align: center;
+                font-size: 26rpx;
+                color: #000;
+                box-sizing: border-box;
+                &.placeholder{
+                  height: 2rpx;
+                  border: none;
+                }
+                &.active{
+                  background-color: #ED2529;
+                  color: #fff;
+                  border-color: #ED2529;
+                }
+              }
+            }
+            .btn-group{
+              margin-top: 18rpx;
+              overflow: hidden;
+              padding-bottom: 25rpx;
+              .btn{
+                height: 83rpx;
+                line-height: 83rpx;
+                text-align: center;
+                font-size: 34rpx;
+                color: #fff;
+                border-radius: 42rpx;
+                float: left;
+                &.confirm{
+                  width: 471rpx;
+                  background:  linear-gradient(0deg, #0A4C90 0%, #2364A6 100%);
+                  margin-right: 26rpx;
+                }
+                &.cancle{
+                  width: 192rpx;
+                  background:  linear-gradient(0deg, #E91216 0%, #F44346 100%);
+                }
+              }
+            }
+          }
+        }
+        .bottom_tab{
+          position: fixed;
+          z-index: 100;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 88rpx;
+          line-height: 88rpx;
+          display: flex;
+          background-color: #fff;
+          font-size:34rpx;
+          font-family:PingFangSC;
+          font-weight:400;
+          text-align: center;
+          color: #16589B;
+          &>view{
+            flex: 1;
+            position: relative;
+            height: 100%;
+            &.active{
+              background: linear-gradient(#2364A6, #0A4C90);
+              color: #fff;
+            }
+            .num{
+              position: absolute;
+              top: 50%;
+              right: 44rpx;
+              transform: translateY(-50%);
+              width: 51rpx;
+              height: 51rpx;
+              line-height: 51rpx;
+              text-align: center;
+              border-radius: 50%;
+              background: linear-gradient(#2364A6, #0A4C90);
+              color: #fff;
+            }
+            &:nth-child(2){
+              // padding-right: 20rpx;
+            }
+          }
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <view class="candidate-date-container">
+    <view class="custom-nav-container">
+      <view class="statusBar" style="height:{{statusBarHeight*pixel}}rpx"></view>
+      <view class="title" style="height:{{navHeight}}rpx;line-height:{{navHeight}}rpx">
+        <view class="title__back" @tap="goBack">
+          <image src="../images/icon-go-back.png"/>
+        </view>
+        <text>{{title}}</text>
+      </view>
+    </view>
+    <view class="wrap" style="padding-top:{{(statusBarHeight*pixel)+navHeight}}rpx">
+      <view class="content">
+        <view class="basic-info">
+          <view class="item">
+            <view class="title">具体时间</view>
+            <view class="desc">12:30-13:15</view>
+          </view>
+          <view class="item">
+            <view class="title">面试地址</view>
+            <view class="desc">办公室</view>
+          </view>
+          <view class="item">
+            <view class="title">面试岗位</view>
+            <view class="desc">CFO</view>
+          </view>
+          <view class="item">
+            <view class="title">候选人</view>
+            <view class="desc">我是名字</view>
+          </view>
+          <view class="item">
+            <view class="title">联系电话</view>
+            <view class="desc">我是电话</view>
+          </view>
+        </view>
+        <view class="select-time">
+          <view class="title">选择面试时间</view>
+          <view class="status">
+            <view>
+              <view class="color first"></view><text>已约</text>
+            </view>
+            <view>
+              <view class="color"></view><text>可约</text>
+            </view>
+            <view>
+              <view class="color last"></view><text>已选</text>
+            </view>
+          </view>
+          <view class="week">
+            <view class="header">
+              <repeat wx:for="{{5}}" wx:key="index">
+                <view class="{{currentWeek == item?'active':''}}" @tap="selectWeek" data-index="{{item}}">星期{{weekMap[item]}}
+                  <view class="arrow_down" wx:if="{{currentWeek == item}}">
+                    <image src="../images/arrow_week_down.png"/>
+                  </view>
+                </view>
+              </repeat>
+            </view>
+            <view class="body">
+              <repeat wx:for="{{dateList}}" wx:key="index">
+                <view @tap="selectDateItem" data-index="{{index}}" class="{{currentDateItem == index?'active':''}}">12:30-13:45</view>
+              </repeat>
+              <repeat wx:for="{{4-dateList.length%4}}" wx:key="index">
+                <view class="placeholder"></view>
+              </repeat>
+            </view>
+            <view class="btn-group">
+              <view class="btn confirm" @tap="confirm">确认</view>
+              <view class="btn cancle" @tap="cancle">不合适</view>
+            </view>
+          </view>
+        </view>
+        <view class="bottom_tab">
+          <view class="{{currentIndex == 0?'active':''}}" @tap="toggleTab" data-index="0">时间预约</view>
+          <view class="{{currentIndex == 1?'active':''}}" @tap="toggleTab" data-index="1">已约管理
+            <view class="num" wx:if="{{unReadNum>0}}">{{unReadNum}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <cancle-candidate />
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '@/api/api'
+  import cancleCandidate from '@/components/cancle_candidate'
+  import { getStore, connect } from 'wepy-redux'
+  const store = getStore()
+  const state = store.getState()
+
+  export default class Mine extends wepy.page {
+    config = {
+    }
+    components = {
+      'cancle-candidate':cancleCandidate
+    }
+
+    data = {
+      statusBarHeight: state.system.systemInfo.statusBarHeight,
+      pixel: state.system.pixel,
+      navHeight: state.system.navHeight,
+      title: '时间选择',
+      currentIndex: 0,
+      unReadNum: 2,
+      jobList: [1],
+      identity: '',
+      weekMap:['一','二','三','四','五'],
+      currentWeek: 0,
+      dateList: [1,2,3,4,5,6,7,8],
+      currentDateItem: 1
+    }
+
+    async getWeather() {
+      let json = await api.getWeather({
+        query: {
+          location:'beijing',
+          lang: 'en',
+          key: '044ffaa038cf4502a6972a0e81e5b65e',
+          unit: 'i'
+        }
+      });
+      console.log(json);
+    }
+
+    methods = {
+      goBack(){
+        wx.navigateBack();
+      },
+      toggleTab(e){
+        this.currentIndex = e.currentTarget.dataset.index;
+      },
+      /**
+       * 切换星期
+       */
+      selectWeek(e){
+        this.currentWeek = e.currentTarget.dataset.index;
+        this.$apply();
+      },
+      selectDateItem(e){
+        this.currentDateItem = e.currentTarget.dataset.index;
+        this.$apply();
+      },
+      confirm(){
+
+      },
+      cancle(){
+        this.$invoke('cancle-candidate','setData');
+      }      
+    }
+
+    onLoad(option) {
+      this.identity = option.identity;
+      this.title = '时间选择'
+    }
+  }
+</script>

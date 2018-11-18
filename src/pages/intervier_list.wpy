@@ -1,0 +1,198 @@
+<style lang="less">
+page{
+  width: 100%;
+  height: 100%;
+  font-family: 'PingFangSC-Semibold';
+  overflow: hidden;
+}
+  .index-container{
+    width: 100%;
+    height: 100%;
+    .custom-nav-container{
+      background: linear-gradient(#2364A6, #0A4C90);
+      width: 100%;
+      // min-height: 140rpx;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      .statusBar{
+        height: 40rpx;
+      }
+      .title{
+        text-align: center;
+        color: #fff;
+        font-size: 36rpx;
+        position: relative;
+        .title__back{
+          width: 90rpx;
+          height: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          image{
+            width: 20rpx;
+            height: 36rpx;
+            margin-top: 50%;
+            transform: translate(-50%,-50%);
+          }
+        }
+        
+      }
+    }
+    .wrap{
+      min-height: 100%;
+      height: 100%;
+      background: #EFEFF4;
+      box-sizing: border-box;
+      overflow: auto;
+      .content{
+        height: auto;
+        position: relative;
+        padding-top: 10rpx;
+        padding-bottom: 176rpx;
+        min-height: 100%;
+        box-sizing: border-box;
+        .no_book{
+          margin-top: 343rpx;
+          text-align: center;
+          image{
+            width: 290rpx;
+            height: 258rpx;
+          }
+          view{
+            font-size:30rpx;
+            font-family:PingFangSC;
+            font-weight:400;
+            margin-top: 61rpx;
+          }
+        }
+        .items{
+          .item{
+            height: 170rpx;
+            position: relative;
+            margin-top:10rpx;
+            background-color: #fff;
+            padding: 27rpx 30rpx;
+            box-sizing: border-box;
+            .job{
+              height: 64rpx;
+              line-height: 64rpx;
+              font-size: 34rpx;
+              color: #222;
+            }
+            .company{
+              height: 53rpx;
+              line-height: 53rpx;
+              font-size: 26rpx;
+              color: #999;
+            }
+            image{
+              position: absolute;
+              top: 50%;
+              right: 30rpx;
+              width: 16rpx;
+              height: 26rpx;
+              transform: translateY(-50%);
+            }
+          }
+        }
+        .no_job{
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          height: 176rpx;
+          text-align: center;
+          line-height: 176rpx;
+          color: #B2B2B2;
+          font-size: 20rpx;
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <view class="index-container">
+    <view class="custom-nav-container">
+      <view class="statusBar" style="height:{{statusBarHeight*pixel}}rpx"></view>
+      <view class="title" style="height:{{navHeight}}rpx;line-height:{{navHeight}}rpx">
+        <view class="title__back" @tap="goBack">
+          <image src="../images/icon-go-back.png"/>
+        </view>
+        <text>面试岗位列表</text>
+      </view>
+    </view>
+    <view class="wrap" style="padding-top:{{(statusBarHeight*pixel)+navHeight}}rpx">
+      <view class="content">
+        <view class="items" wx:if="{{feedList.length>0}}">
+          <repeat wx:for="{{feedList}}" wx:key="index">
+            <view class="item" @tap="toSelectDate">
+              <view class="job">CFO</view>
+              <view class="company">我是某某公司的全称名称</view>
+              <image src="../images/icon-arrow-right.png"/>
+            </view>
+          </repeat>
+        </view>
+        <view class="no_book" wx:else>
+          <image src="../images/icon-no-book.png"/>
+          <view>您还没有相关的面试邀请</view>
+        </view>
+        <view class="no_job" wx:if="{{feedList.length>0}}">没有啦</view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '@/api/api'
+  // import customNav from '@/components/custom_nav'
+  import { getStore, connect } from 'wepy-redux'
+  const store = getStore()
+  const state = store.getState()
+
+  export default class InterviewList extends wepy.page {
+    config = {
+    }
+    components = {
+      // 'custom-nav': customNav
+    }
+
+    data = {
+      statusBarHeight: state.system.systemInfo.statusBarHeight,
+      pixel: state.system.pixel,
+      navHeight: state.system.navHeight,
+      currentIndex: 'no',
+      feedList:[1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3],
+      // feedList:[],
+    }
+
+    async getWeather() {
+      let json = await api.getWeather({
+        query: {
+          location:'beijing',
+          lang: 'en',
+          key: '044ffaa038cf4502a6972a0e81e5b65e',
+          unit: 'i'
+        }
+      });
+      console.log(json);
+    }
+
+    methods = {
+      goBack(){
+        wx.navigateBack();
+      },
+      /**
+       * 跳转到选择时间
+       */
+      toSelectDate(){
+        wx.navigateTo({
+          url: './candidate_date'
+        });
+      }
+    }
+    onLoad() {
+    }
+  }
+</script>
