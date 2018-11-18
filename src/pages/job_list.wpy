@@ -11,7 +11,7 @@ page{
     .custom-nav-container{
       background: linear-gradient(#2364A6, #0A4C90);
       width: 100%;
-      min-height: 140rpx;
+      // min-height: 140rpx;
       position: fixed;
       top: 0;
       left: 0;
@@ -152,6 +152,9 @@ page{
     }
 
     methods = {
+      goBack(){
+        wx.navigateBack();
+      },
       selectEntry(e){
         this.currentIndex = e.currentTarget.dataset.index;
         wx.navigateTo({

@@ -69,11 +69,19 @@ page{
           .input{
             flex: 1;
             color: #999;
+            position: relative;
+            padding-left: 45rpx;
+            input{
+              height: 100%;
+              line-height: 70rpx;
+            }
             image{
+              position: absolute;
+              top: 50%;
+              left: -4rpx;
               width: 29rpx;
               height: 29rpx;
-              margin-top: -4rpx;
-              vertical-align: middle;
+              transform: translateY(-50%)
             }
           }
         }
@@ -117,16 +125,16 @@ page{
     </view>
     <view class="wrap" style="padding-top:{{(statusBarHeight*pixel)+navHeight}}rpx">
       <view class="content">
-        <view class="seach">
+        <!-- <view class="seach">
           <view class="country">香港<image src="../images/icon-arrow-down.png"/></view>
           <view class="input">
             <image src="../images/icon-seach.png"/>
-            写字楼/小区等
+            <input placeholder="写字楼/小区等"/>
           </view>
-        </view>
+        </view> -->
         <view class="current-location">
           <view class="title">当前位置</view>
-          <view class="location">我是当时定位的公司地址
+          <view class="location">暂未定位
             <view class="re-locate" @tap="chooseLocation"><image src="../images/icon-locate.png"/>重新定位</view>
           </view>
         </view>
@@ -188,6 +196,11 @@ page{
     }
 
     onLoad() {
+      wx.getLocation({
+        type: 'gcj02',
+        success (res) {
+        }
+      })
     }
   }
 </script>

@@ -45,20 +45,6 @@ page{
       background: #EFEFF4;
       .content{
         height: 100%;
-        .no_book{
-          margin-top: 343rpx;
-          text-align: center;
-          image{
-            width: 290rpx;
-            height: 258rpx;
-          }
-          view{
-            font-size:30rpx;
-            font-family:PingFangSC;
-            font-weight:400;
-            margin-top: 61rpx;
-          }
-        }
         .bottom_tab{
           position: fixed;
           z-index: 100;
@@ -117,12 +103,8 @@ page{
     </view>
     <view class="wrap" style="padding-top:{{(statusBarHeight*pixel)+navHeight}}rpx">
       <view class="content">
-        <view class="no_book" wx:if="{{jobList.length==0}}">
-          <image src="../images/icon-no-book.png"/>
-          <view>您还没有相关的面试邀请</view>
-        </view>
         <mine-job-list wx:if="{{identity == 'candidate'}}"/>
-        <date-book />
+        <!-- <date-book /> -->
         <view class="bottom_tab">
           <view class="{{currentIndex == 0?'active':''}}" @tap="toggleTab" data-index="0">时间预约</view>
           <view class="{{currentIndex == 1?'active':''}}" @tap="toggleTab" data-index="1">已约管理
@@ -147,7 +129,8 @@ page{
     config = {
     }
     components = {
-      'date-book': DateBook
+      'date-book': DateBook,
+      'mine-job-list':mineJobList
     }
 
     data = {
@@ -174,6 +157,9 @@ page{
     }
 
     methods = {
+      goBack(){
+        wx.navigateBack();
+      },
       toggleTab(e){
         this.currentIndex = e.currentTarget.dataset.index;
       }      
@@ -181,7 +167,7 @@ page{
 
     onLoad(option) {
       this.identity = option.identity;
-      console.log(this.identity);
+      this.title = '面试岗位列表'
     }
   }
 </script>

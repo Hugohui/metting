@@ -94,7 +94,9 @@
     }
 
     methods = {
-     setData(data){
+     setData(){
+       this.isShow = true;
+       this.$apply();
      },
      chooseReason(e){
        this.currentReasonIndex = e.currentTarget.dataset.index;
