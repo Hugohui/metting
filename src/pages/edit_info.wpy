@@ -80,6 +80,9 @@ page{
             &:nth-last-child(1){
               border: none;
             }
+            .picker{
+              height: 110rpx;
+            }
             &>view{
               height: 100%;
               text-align: left;
@@ -161,7 +164,7 @@ page{
             <view class="required" wx:if="{{enter_type == 0 || enter_type == 1}}">*</view>
           </view>
           <view>
-            <input value="翼"/>
+            <input bindinput="bindinputName" placeholder="请输入姓名"/>
           </view>
         </view>
         <view class="item">
@@ -173,7 +176,7 @@ page{
             <view class="section">
               <picker bindchange="bindPickerChange" value="{{'男'}}" range="{{sixArr}}">
                 <view class="picker">
-                  <view class="picker">男</view>
+                  <view class="picker">{{sixArr[currentSixIndex]}}</view>
                 </view>
               </picker>
             </view>
@@ -185,7 +188,7 @@ page{
             <view class="required" wx:if="{{enter_type == 0 || enter_type == 1}}">*</view>
           </view>
           <view>
-            <input value="翼"/>
+            <input bindinput="bindinputCompany" placeholder="请输入公司"/>
           </view>
         </view>
         <view class="item">
@@ -194,7 +197,7 @@ page{
             <view class="required" wx:if="{{enter_type == 0 || enter_type == 1}}">*</view>
           </view>
           <view>
-            <input value="翼"/>
+            <input bindinput="bindinputPosition" placeholder="请输入职位"/>
           </view>
         </view>
         <view class="item">
@@ -203,7 +206,7 @@ page{
             <view class="required" wx:if="{{enter_type == 0 || enter_type == 1}}">*</view>
           </view>
           <view>
-            <input value="翼"/>
+            <input bindinput="bindinputPhone" placeholder="请输入电话"/>
           </view>
         </view>
         <view class="item">
@@ -212,7 +215,7 @@ page{
             <view class="required" wx:if="{{enter_type == 1}}">*</view>
           </view>
           <view>
-            <input value="翼"/>
+            <input bindinput="bindinputEmail" placeholder="请输入邮箱"/>
           </view>
         </view>
        </view>
@@ -229,6 +232,7 @@ page{
 <script>
   import wepy from 'wepy'
   import api from '@/api/api'
+  import util from '@/utils/util'
   // import customNav from '@/components/custom_nav'
   import { getStore, connect } from 'wepy-redux'
   const store = getStore()
@@ -246,19 +250,36 @@ page{
       pixel: state.system.pixel,
       navHeight: state.system.navHeight,
       enter_type: 0,
-      sixArr:['男','女']
+      sixArr:['男','女'],
+      currentSixIndex: 0,
+      name: '',
+      company: '',
+      position: '',
+      phone: '',
+      email: ''
     }
 
-    async getWeather() {
-      let json = await api.getWeather({
-        query: {
-          location:'beijing',
-          lang: 'en',
-          key: '044ffaa038cf4502a6972a0e81e5b65e',
-          unit: 'i'
+    /**
+     * 提交信息
+     */
+    async getAreaCode(){
+      let json = await api.getAreaCode({
+        post:{
+          user_id: store.getState().user.user_id,
+          name: this.name,
+          company: this.company,
+          position: this.position,
+          phone: this.phone,
+          email: this.email,
+          six: this.sixArr[this.currentSixIndex]
         }
-      });
-      console.log(json);
+      })
+      if(json.data.err_no == 0){
+        wx.showToast({
+          title: '提交成功'
+        });
+      }
+      this.$apply();
     }
 
     methods = {
@@ -266,17 +287,123 @@ page{
         wx.navigateBack();
       },
       confirm(){
-        if(this.enter_type == 1){
-          wx.navigateTo({
-            url: './intervier_list'
+        if(this.checkInput()){
+          if(this.enter_type == 1){
+            wx.navigateTo({
+              url: './intervier_list'
+            });
+          }else{
+            wx.navigateTo({
+              url: './job_list'
+            });
+          }
+        }
+      },
+      bindPickerChange(e){
+        this.currentSixIndex = e.detail.value;
+        this.$apply();
+      },
+      bindinputName(e){
+        this.name = e.detail.value;
+        this.$apply();
+      },
+      bindinputCompany(e){
+        this.company = e.detail.value;
+        this.$apply(e);
+      },
+      bindinputPosition(e){
+        this.position = e.detail.value;
+        this.$apply();
+      },
+      bindinputPhone(e){
+        this.phone = e.detail.value;
+        this.$apply();
+      },
+      bindinputEmail(e){
+        this.email = e.detail.value;
+        this.$apply();
+      }
+    }
+
+    checkInput(){
+      if(util.isEmpty(this.name)){
+        wx.showToast({
+          title: '请输入姓名',
+          icon: 'none'
+        });
+        return false;
+      }
+      if(util.isEmpty(this.company)){
+        wx.showToast({
+          title: '请输入公司名称',
+          icon: 'none'
+        });
+        return false;
+      }
+      if(util.isEmpty(this.position)){
+        wx.showToast({
+          title: '请输入职位',
+          icon: 'none'
+        });
+        return false;
+      }
+      if(util.isEmpty(this.phone)){
+        wx.showToast({
+          title: '请输入电话号码',
+          icon: 'none'
+        });
+        return false;
+      }else{
+        if(!this.checkPhone(this.phone)){
+          wx.showToast({
+            title: '电话号码有误',
+            icon: 'none'
           });
-        }else{
-          wx.navigateTo({
-            url: './job_list'
-          });
+          return false;
         }
       }
-      
+      if(this.enter_type == 1){
+        if(util.isEmpty(this.email)){
+          wx.showToast({
+            title: '请输入邮箱',
+            icon: 'none'
+          });
+          return false;
+        }else{
+          if(!this.checkEmail(this.email)){
+            wx.showToast({
+              title: '邮箱格式错误',
+              icon: 'none'
+            });
+            return false;
+          }
+        }
+      }else{
+        if(!util.isEmpty(this.email) && !this.checkEmail(this.email)){
+          wx.showToast({
+            title: '邮箱格式错误',
+            icon: 'none'
+          });
+          return false;
+        }
+      }
+      return true;
+    }
+
+    /**
+     * 验证电话号码
+     */
+    checkPhone(sMobile){
+      const testStr = /^1[3|4|5|7|8][0-9]\d{8}$/;
+      return testStr.test(sMobile);
+    }
+
+    /**
+     * 验证邮箱
+     */
+    checkEmail(email){
+      const testStr = /^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/;
+      return testStr.test(email);
     }
 
     onLoad(option) {

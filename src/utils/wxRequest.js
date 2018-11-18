@@ -34,10 +34,16 @@ const wxPost = async(params = {}, url) => {
         url: url,
         method: 'POST',
         data: data,
-        header: { 'Content-Type': 'application/json' },
+        header: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
     if (params.showLoading) {
       tip.loaded();
+    }
+    if(res.data.err_no != 0){
+        wx.showToast({
+            title: res.data.text,
+            icon: 'none'
+        });
     }
     return res;
 };

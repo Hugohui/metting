@@ -92,6 +92,7 @@ page{
             top: 50%;
             transform: translateY(-50%);
             margin-top: -2rpx;
+            z-index: 10;
             &.eye{
               width: 40rpx;
               height: 32rpx;
@@ -156,8 +157,8 @@ page{
           <view class="input_view">
             <view class="phone__left">{{areaCodeArr[areaIndex].code}}<view class="line"></view></view>
             <view class="phone__right">
-              <input placeholder="请输入{{areaCodeArr[areaIndex].phoneLength}}位手机号" placeholder-class="placeholder"/>
-              <image src="../images/icon-reset-phone.png"/>
+              <input placeholder="请输入{{areaCodeArr[areaIndex].phoneLength}}位手机号" value="{{phoneNum}}" placeholder-class="placeholder" bindinput="bindinputPhone" type="number"/>
+              <image src="../images/icon-reset-phone.png" @tap="clearPhoneNum"/>
             </view>
           </view>
           <view class="operator">
@@ -174,19 +175,19 @@ page{
         </view>
         <view class="pd">
           <view class="input_view">
-            <input placeholder="6-32位密码" placeholder-class="placeholder" password="{{isPassword}}"/>
+            <input placeholder="6-32位密码" placeholder-class="placeholder" password="{{isPassword}}" value="{{pwd}}" bindinput="bindinputPwd"/>
             <image class="eye" src="{{isPassword?'../images/icon-pd-visible.png':'../images/icon-pd-invisible.png'}}" @tap="toggleVisible"/>            
           </view>
         </view>
         <view class="security_code ">
           <view class="input_view">
-            <input placeholder="请输入验证码" placeholder-class="placeholder"/>
+            <input placeholder="请输入验证码" placeholder-class="placeholder" bindinput="bindinputCode"/>
             <view class="get-security-code security-code-text" @tap="getSecurityCode" wx:if="{{showGet}}">获取验证码</view>
             <view class="re-get-code security-code-text" @tap="getSecurityCode" wx:if="{{showReGet}}">重新获取</view>
             <view class="cut-down security-code-text" wx:if="{{showCutDownNum}}">{{maxNum}}s后重新获取</view>
           </view>
         </view>
-        <view class="register" @tap="register">立即注册</view>
+        <view class="register" @tap="register">{{btnText}}</view>
       </view>
       <view class="register_btn" @tap="goLogin">登录</view>
     </view>
@@ -196,7 +197,9 @@ page{
 <script>
   import wepy from 'wepy'
   import api from '@/api/api'
+  import util from '@/utils/util'
   import { getStore, connect } from 'wepy-redux'
+  import { setUser } from '@/store/actions/user.redux'
   const store = getStore()
   export default class Register extends wepy.page {
     config = {
@@ -206,26 +209,65 @@ page{
 
     data = {
       isPassword: true,
-      areaArr: ['+852 中国香港','+86 中国大陆','+886 中国台湾'],
-      areaCodeArr: [{code:'+852',name:'中国香港',phoneLength:11},{code:'+86',name:'中国大陆',phoneLength:11},{code:'+886',name:'中国台湾',phoneLength:8}],
-      areaIndex: 1,
+      enterType:'',
+      btnText: '',
+      areaArr: [],
+      areaCodeArr: [],
+      areaIndex: 0,
       cutDownTimer: null,
       maxNum: 15,
       showGet: true,
       showReGet: false,
-      showCutDownNum: false
+      showCutDownNum: false,
+      phoneNum: '', //电话
+      pwd: '', // 密码
+      code: '' // 验证码
     }
 
-    async getWeather() {
-      let json = await api.getWeather({
-        query: {
-          location:'beijing',
-          lang: 'en',
-          key: '044ffaa038cf4502a6972a0e81e5b65e',
-          unit: 'i'
+    /**
+     * 获取验证码
+     */
+    async getVerifyCode() {
+      let json = await api.getVerifyCode({
+        post: {
+          mobile: this.phoneNum,
+          code: this.areaCodeArr[this.areaIndex].code
         }
       });
-      console.log(json);
+    }
+
+    /**
+     * 获取区域code
+     */
+    async getAreaCode(){
+      let json = await api.getAreaCode({})
+      if(json.data.err_no == 0){
+        this.areaCodeArr = json.data.results.lists;
+        this.areaCodeArr.forEach(item => {
+        this.areaArr.push(item.code+ ' ' + item.name)
+        });
+        this.$apply();
+      }
+      this.$apply();
+    }
+
+    /**
+     * 注册
+     */
+    async register() {
+      let json = await api.register({
+        post: {
+          mobile: this.phoneNum,
+          code: this.areaCodeArr[this.areaIndex].code,
+          pass: this.pwd,
+          verify: this.code
+        }
+      });
+      if(json.data.err_no == 0){
+        wx.navigateTo({
+          url: './select_entry'
+        });
+      }
     }
 
     methods = {
@@ -233,7 +275,9 @@ page{
        * 注册
        */
       register(){
-        this.registerCallback();
+        if(this.checkInput()){
+          this.register();
+        }
       },
       /**
       * 密码现实切换
@@ -257,11 +301,43 @@ page{
       * 获取验证码
       */
       getSecurityCode(){
+        if(util.isEmpty(this.phoneNum)){
+          wx.showToast({
+            title: '请输入电话号码',
+            icon: 'none'
+          });
+          return;
+        }else{
+          if(!this.checkPhone(this.phoneNum)){
+            wx.showToast({
+              title: '电话号码有误',
+              icon: 'none'
+            });
+            return;
+          }
+        }
         this.maxNum = 60;
         this.showGet = false;
         this.showReGet = false;
         this.showCutDownNum = true;
+        this.getVerifyCode();
         this.cutDown();
+      },
+      bindinputPhone(e){
+        this.phoneNum = e.detail.value;
+        this.$apply();
+      },
+      bindinputPwd(e){
+        this.pwd = e.detail.value;
+        this.$apply();
+      },
+      bindinputCode(e){
+        this.code = e.detail.value;
+        this.$apply();
+      },
+      clearPhoneNum(){
+        this.phoneNum = '';
+        this.$apply();
       }
     }
 
@@ -269,6 +345,64 @@ page{
       wx.navigateTo({
         url: './select_entry'
       });
+    }
+
+    checkInput(){
+        if(util.isEmpty(this.phoneNum)){
+          wx.showToast({
+            title: '请输入电话号码',
+            icon: 'none'
+          });
+          return false;
+        }else{
+          if(!this.checkPhone(this.phoneNum)){
+            wx.showToast({
+              title: '电话号码有误',
+              icon: 'none'
+            });
+            return false;
+          }
+        }
+        if(util.isEmpty(this.pwd)){
+          wx.showToast({
+            title: '请输入密码',
+            icon: 'none'
+          });
+          return false;
+        }else{
+          const pwdLen = this.pwd.length;
+            if(pwdLen < 4 || pwdLen >32){
+              wx.showToast({
+              title: '请检查密码长度',
+              icon: 'none'
+            });
+            return false;
+          }
+        }
+
+        if(util.isEmpty(this.code)){
+          wx.showToast({
+            title: '请输入验证码',
+            icon: 'none'
+          });
+          return false;
+        }else{
+          const pwdLen = this.code.length;
+          const testReg = /^\d{6}$/;
+            if(!testReg.test(this.code) || pwdLen != 6){
+              wx.showToast({
+              title: '验证码格式错误',
+              icon: 'none'
+            });
+            return false;
+          }
+        }
+        return true;
+    }
+
+    checkPhone(sMobile){
+      const testStr = /^1[3|4|5|7|8][0-9]\d{8}$/;
+      return testStr.test(sMobile);
     }
 
     cutDown(){
@@ -285,9 +419,19 @@ page{
       },1000);
     }
 
+    onShow(){
 
+    }
 
-    onLoad() {
+    onLoad(option) {
+      this.enterType = option.type;
+      if(this.enterType == 'misspwd'){
+        this.btnText = '重置密码'
+      }else{
+        this.btnText = '立即注册'
+      }
+      this.$apply();
+      this.getAreaCode();
     }
   }
 </script>

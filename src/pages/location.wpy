@@ -94,6 +94,16 @@ page{
           }
           .location{
             margin: 15rpx 0;
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+            text{
+              width: 550rpx;
+              display: inline-block;
+              overflow: hidden;
+              text-overflow:ellipsis;
+              white-space: nowrap;
+            }
             .re-locate{
               width: 150rpx;
               text-align: right;
@@ -134,7 +144,7 @@ page{
         </view> -->
         <view class="current-location">
           <view class="title">当前位置</view>
-          <view class="location">暂未定位
+          <view class="location"><text>{{address}}</text>
             <view class="re-locate" @tap="chooseLocation"><image src="../images/icon-locate.png"/>重新定位</view>
           </view>
         </view>
@@ -148,6 +158,8 @@ page{
   import api from '@/api/api'
   // import customNav from '@/components/custom_nav'
   import { getStore, connect } from 'wepy-redux'
+  import { setAddress } from '@/store/actions/address.redux'
+
   const store = getStore()
   const state = store.getState()
 
@@ -162,22 +174,14 @@ page{
       statusBarHeight: state.system.systemInfo.statusBarHeight,
       pixel: state.system.pixel,
       navHeight: state.system.navHeight,
-      currentIndex: 'no'
-    }
-
-    async getWeather() {
-      let json = await api.getWeather({
-        query: {
-          location:'beijing',
-          lang: 'en',
-          key: '044ffaa038cf4502a6972a0e81e5b65e',
-          unit: 'i'
-        }
-      });
-      console.log(json);
+      currentIndex: 'no',
+      address: '暂未定位'
     }
 
     methods = {
+      goBack(){
+        wx.navigateBack();
+      },
       selectEntry(e){
         this.currentIndex = e.currentTarget.dataset.index;
         wx.navigateTo({
@@ -185,10 +189,13 @@ page{
         });
       },
       chooseLocation(){
-        console.log('chooseLocation');
         wx.chooseLocation({
           success:(res)=>{
-            console.log(res);
+            this.address = res.address;
+            store.dispatch(setAddress({
+              addressInfo: res
+            }));
+            this.$apply();
           }
         });
       }
@@ -196,11 +203,6 @@ page{
     }
 
     onLoad() {
-      wx.getLocation({
-        type: 'gcj02',
-        success (res) {
-        }
-      })
     }
   }
 </script>

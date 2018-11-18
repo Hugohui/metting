@@ -45,6 +45,44 @@ page{
       background: #EFEFF4;
       .content{
         height: 100%;
+        .basic-info{
+          background-color: #fff;
+          padding: 6rpx 0 6rpx 30rpx;
+          box-sizing: border-box;
+          font-size: 34rpx;
+          .item{
+            height: 88rpx;
+            line-height: 88rpx;
+            border-bottom: 2rpx solid #E5E5E5;
+            display: flex;
+            &:nth-last-child(1){
+              border: none;
+            }
+            &>view{
+              &.title{
+                width: 180rpx;
+              }
+              &.desc{
+                flex: 1;
+                color: #B2B2B2;
+                position: relative;
+                padding-right: 100rpx;
+                box-sizing: border-box;
+                overflow: hidden;
+                text-overflow:ellipsis;
+                white-space: nowrap;
+                image{
+                  position: absolute;
+                  right: 33rpx;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  width: 35rpx;
+                  height: 43rpx;
+                }
+              }
+            }
+          }
+        }
         .bottom_tab{
           position: fixed;
           z-index: 100;
@@ -103,8 +141,22 @@ page{
     </view>
     <view class="wrap" style="padding-top:{{(statusBarHeight*pixel)+navHeight}}rpx">
       <view class="content">
-        <mine-job-list wx:if="{{identity == 'candidate'}}"/>
-        <!-- <date-book /> -->
+        <view class="basic-info">
+          <view class="item">
+            <view class="title">面试地址</view>
+            <view class="desc" @tap="selectLocation">{{address}}
+              <image src="../images/icon-select-location.png"/>
+            </view>
+          </view>
+          <view class="item">
+            <view class="title">面试岗位</view>
+            <view class="desc">办公室</view>
+          </view>
+          <view class="item">
+            <view class="title">候选人</view>
+            <view class="desc">CFO</view>
+          </view>
+        </view>
         <view class="bottom_tab">
           <view class="{{currentIndex == 0?'active':''}}" @tap="toggleTab" data-index="0">时间预约</view>
           <view class="{{currentIndex == 1?'active':''}}" @tap="toggleTab" data-index="1">已约管理
@@ -137,23 +189,12 @@ page{
       statusBarHeight: state.system.systemInfo.statusBarHeight,
       pixel: state.system.pixel,
       navHeight: state.system.navHeight,
-      title: '预约时间',
+      title: '时间选择',
       currentIndex: 0,
       unReadNum: 2,
       jobList: [1],
-      identity: ''
-    }
-
-    async getWeather() {
-      let json = await api.getWeather({
-        query: {
-          location:'beijing',
-          lang: 'en',
-          key: '044ffaa038cf4502a6972a0e81e5b65e',
-          unit: 'i'
-        }
-      });
-      console.log(json);
+      identity: '',
+      address: ''
     }
 
     methods = {
@@ -162,12 +203,22 @@ page{
       },
       toggleTab(e){
         this.currentIndex = e.currentTarget.dataset.index;
+      },
+      selectLocation(){
+        wx.navigateTo({
+          url: './location'
+        });
       }      
+    }
+
+    onShow(){
+      this.address = store.getState().addressInfo.addressInfo.address;
+      this.$apply();
     }
 
     onLoad(option) {
       this.identity = option.identity;
-      this.title = '面试岗位列表'
+      this.$apply();
     }
   }
 </script>

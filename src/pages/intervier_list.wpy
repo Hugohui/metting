@@ -164,19 +164,21 @@ page{
       navHeight: state.system.navHeight,
       currentIndex: 'no',
       feedList:[1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3],
-      // feedList:[],
     }
 
-    async getWeather() {
-      let json = await api.getWeather({
-        query: {
-          location:'beijing',
-          lang: 'en',
-          key: '044ffaa038cf4502a6972a0e81e5b65e',
-          unit: 'i'
+    /**
+     * 获取面试
+     */
+    async getInterviewList(){
+      let json = await api.getInterviewList({
+        post:{
+          user_id: store.getState().user.user_id
         }
-      });
-      console.log(json);
+      })
+      if(json.data.err_no == 0){
+        this.feedList = json.data.results.lists;
+      }
+      this.$apply();
     }
 
     methods = {
@@ -193,6 +195,7 @@ page{
       }
     }
     onLoad() {
+      this.getInterviewList();
     }
   }
 </script>

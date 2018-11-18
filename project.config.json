@@ -30,7 +30,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 6,
+			"current": 8,
 			"list": [
 				{
 					"id": -1,
@@ -71,7 +71,19 @@
 				{
 					"id": -1,
 					"name": "candidate_date",
-					"pathName": "pages/candidate_date"
+					"pathName": "pages/candidate_date",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "intervier_list",
+					"pathName": "pages/intervier_list",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "mine",
+					"pathName": "pages/mine"
 				}
 			]
 		}

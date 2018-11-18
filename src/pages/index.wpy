@@ -156,7 +156,7 @@ page{
           <view class="input_view">
             <view class="phone__left">{{areaCodeArr[areaIndex].code}}<view class="line"></view></view>
             <view class="phone__right">
-              <input placeholder="请输入{{areaCodeArr[areaIndex].phoneLength}}位手机号" placeholder-class="placeholder"/>
+              <input placeholder="请输入{{areaCodeArr[areaIndex].phoneLength}}位手机号" placeholder-class="placeholder" value="{{phoneNum}}" bindinput="bindinputPhone"/>
               <image src="../images/icon-reset-phone.png"/>
             </view>
           </view>
@@ -174,11 +174,11 @@ page{
         </view>
         <view class="pd">
           <view class="input_view">
-            <input placeholder="请输入密码" placeholder-class="placeholder" password="{{isPassword}}"/>
+            <input placeholder="请输入密码" placeholder-class="placeholder" password="{{isPassword}}" value="{{pwd}}" bindinput="bindinputPwd"/>
             <image class="eye" src="{{isPassword?'../images/icon-pd-visible.png':'../images/icon-pd-invisible.png'}}" @tap="toggleVisible"/>            
           </view>
           <view class="operator">
-            <view class="miss_pd">忘记密码</view>
+            <view class="miss_pd" @tap="missPwd">忘记密码</view>
           </view>
         </view>
         <view class="login phone_login" @tap="phoneLogin">登录</view>
@@ -193,7 +193,9 @@ page{
 
 <script>
   import wepy from 'wepy'
+  import util from '@/utils/util'
   import api from '@/api/api'
+  import wxLogin from '@/utils/wxLogin'
   import { getStore, connect } from 'wepy-redux'
   const store = getStore()
   export default class Index extends wepy.page {
@@ -204,21 +206,44 @@ page{
 
     data = {
       isPassword: true,
-      areaArr: ['+852 中国香港','+86 中国大陆','+886 中国台湾'],
-      areaCodeArr: [{code:'+852',name:'中国香港',phoneLength:11},{code:'+86',name:'中国大陆',phoneLength:11},{code:'+886',name:'中国台湾',phoneLength:8}],
-      areaIndex: 1
+      areaArr: [],
+      areaCodeArr: [],
+      areaIndex: 0,
+      phoneNum: '', //电话
+      pwd: '', // 密码
     }
 
-    async getWeather() {
-      let json = await api.getWeather({
-        query: {
-          location:'beijing',
-          lang: 'en',
-          key: '044ffaa038cf4502a6972a0e81e5b65e',
-          unit: 'i'
+    /**
+     * 获取区域code
+     */
+    async getAreaCode(){
+      let json = await api.getAreaCode({})
+      if(json.data.err_no == 0){
+        this.areaCodeArr = json.data.results.lists;
+        this.areaCodeArr.forEach(item => {
+        this.areaArr.push(item.code+ ' ' + item.name)
+        });
+        this.$apply();
+      }
+      this.$apply();
+    }
+
+    /**
+     * 登录
+     */
+    async login() {
+      let json = await api.login({
+        post: {
+          mobile: this.phoneNum,
+          code: this.areaCodeArr[this.areaIndex].code,
+          pass: this.pwd,
         }
       });
-      console.log(json);
+      if(json.data.err_no == 0){
+        wx.navigateTo({
+          url: './select_entry'
+        });
+      }
     }
 
     methods = {
@@ -227,14 +252,19 @@ page{
        */
       authorizeLogin(e){
         if(e.detail.userInfo){
-          this.loginCallback();
+          const option = {
+            userInfo: e.detail.userInfo
+          }
+          wxLogin.login(option);
         }
       },
       /**
        * 手机号登录
        */
       phoneLogin(){
-        this.loginCallback();
+        if(this.checkInput()){
+          this.login();
+        }
       },
       /**
       * 密码现实切换
@@ -253,18 +283,72 @@ page{
       */
       goRegister(){
         wx.navigateTo({
-          url: './register'
+          url: './register?type=register'
         });
-      }
+      },
+      missPwd(){
+        wx.navigateTo({
+          url: './register?type=misspwd'
+        });
+      },
+      bindinputPhone(e){
+        this.phoneNum = e.detail.value;
+        this.$apply();
+      },
+      bindinputPwd(e){
+        this.pwd = e.detail.value;
+        this.$apply();
+      },
     }
 
-    loginCallback(){
-      wx.navigateTo({
-        url: './select_entry'
-      });
+    /**
+     * 输入检测
+     */
+    checkInput(){
+        if(util.isEmpty(this.phoneNum)){
+          wx.showToast({
+            title: '请输入电话号码',
+            icon: 'none'
+          });
+          return false;
+        }else{
+          if(!this.checkPhone(this.phoneNum)){
+            wx.showToast({
+              title: '电话号码有误',
+              icon: 'none'
+            });
+            return false;
+          }
+        }
+        if(util.isEmpty(this.pwd)){
+          wx.showToast({
+            title: '请输入密码',
+            icon: 'none'
+          });
+          return false;
+        }else{
+          const pwdLen = this.pwd.length;
+            if(pwdLen < 4 || pwdLen >32){
+              wx.showToast({
+              title: '请检查密码长度',
+              icon: 'none'
+            });
+            return false;
+          }
+        }
+        return true;
+    }
+
+    /**
+     * 验证电话号码
+     */
+    checkPhone(sMobile){
+      const testStr = /^1[3|4|5|7|8][0-9]\d{8}$/;
+      return testStr.test(sMobile);
     }
 
     onLoad() {
+      this.getAreaCode();
     }
   }
 </script>
