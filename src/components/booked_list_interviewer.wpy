@@ -1,0 +1,127 @@
+<style type="less">
+ .booked-candidate-list{
+   width: 100%;
+   font-family: PingFangSC-Regular;
+    .tab{
+      width: 100%;
+      display: flex;
+      height: 94rpx;
+      line-height: 94rpx;
+      text-align: center;
+      background-color: #fff;
+      &>view{
+        flex: 1;
+        font-size: 28rpx;
+        color: #353535;
+        &.active{
+          border-bottom: 6rpx solid #0A4C90;
+          color: #135498;
+        }
+      }
+    }
+    .items{
+      margin-top: 10rpx;
+      .item{
+        background-color: #fff;
+        padding: 18rpx 0 0 30rpx;
+        margin-top: 10rpx;
+        font-size: 26rpx;
+        .title{
+          height: 70rpx;
+          line-height: 70rpx;
+          border-bottom: 2rpx solid #E5E5E5;
+          box-sizing: border-box;
+          color: #EE282C;
+        }
+        .content{
+          color: #999;
+          padding: 30rpx 0 25rpx 0;
+          position: relative;
+          border-bottom: 2rpx solid #E5E5E5;
+          &:nth-last-child(1){
+            border: none;
+          }
+          .job{
+            font-size: 34rpx;
+            color: #222222;
+          }
+          .date,.phone{
+            line-height: 37rpx;
+          }
+          text{
+            margin-left: 200rpx;
+          }
+          .toDetail{
+            position: absolute;
+            top: 50%;
+            right: 30rpx;
+            transform: translateY(-50%);
+            width: 16rpx;
+            height: 26rpx;
+            image{
+              width: 100%;
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+ }
+</style>
+<template>
+  <view class="booked-candidate-list">
+    <view class="tab">
+      <view @tap="toggleBookedTab" data-index="0" class="{{currentIndex == 0?'active':''}}">待面试</view>
+      <view @tap="toggleBookedTab" data-index="1" class="{{currentIndex == 1?'active':''}}">已面试</view>
+    </view>
+    <view class="items">
+      <repeat for="{{jobList}}" key="index">
+        <view class="item">
+          <view class="title" style="color:{{currentIndex == 0?'#EE282C':'#999'}}">2018-10-20 9:00~12:00</view>
+          <repeat for="{{2}}" key="index">
+            <view class="content">
+            <view class="job" style="color:{{currentIndex == 0?'#222':'#999'}}">CFO</view>
+            <view class="date">候选人:我是名字<text>面试时间9:00-9:45</text></view>
+            <view class="phone">联系电话:13987654567</view>
+            <view class="toDetail">
+              <image src="../images/icon-arrow-right.png"/>
+            </view>
+          </view>
+          </repeat>
+        </view>
+      </repeat>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class BookedListInterviewer extends wepy.component {
+    props = {
+      
+    }
+
+    components = {
+    }
+
+    data = {
+      jobList: [1,2,3],
+      currentIndex: 0
+    }
+
+    methods = {
+     setData(data){
+       this.jobList = [1,2,3]
+       this.$apply();
+     },
+     toggleBookedTab(e){
+       this.currentIndex = e.currentTarget.dataset.index;
+       this.$apply();
+     }
+    }
+
+    onLoad(){  
+      
+    }
+  }
+</script>

@@ -187,7 +187,7 @@ page{
             <view class="cut-down security-code-text" wx:if="{{showCutDownNum}}">{{maxNum}}s后重新获取</view>
           </view>
         </view>
-        <view class="register" @tap="register">{{btnText}}</view>
+        <view class="register" @tap="register" data-type="{{enterType}}">{{btnText}}</view>
       </view>
       <view class="register_btn" @tap="goLogin">登录</view>
     </view>
@@ -203,6 +203,7 @@ page{
   const store = getStore()
   export default class Register extends wepy.page {
     config = {
+      disableScroll: true
     }
     components = {
     }
@@ -264,9 +265,41 @@ page{
         }
       });
       if(json.data.err_no == 0){
-        wx.navigateTo({
-          url: './select_entry'
+        const realData = json.data.results;
+        store.dispatch(setUser({
+          userInfo: realData.info,
+          loginType: 'phone'
+        }));
+        wx.showToast({
+          title: '注册成功'
         });
+        setTimeout(()=>{
+          wx.navigateTo({
+            url: './select_entry'
+          });
+        },1200);
+      }
+    }
+
+    /**
+     * 找回密码
+     */
+    async reset() {
+      let json = await api.reset({
+        post: {
+          mobile: this.phoneNum,
+          code: this.areaCodeArr[this.areaIndex].code,
+          pass: this.pwd,
+          verify: this.code
+        }
+      });
+      if(json.data.err_no == 0){
+        wx.showToast({
+          title: '已重置'
+        });
+        setTimeout(() => {
+          wx.navigateBack();          
+        }, 1200);
       }
     }
 
@@ -274,9 +307,14 @@ page{
       /**
        * 注册
        */
-      register(){
+      register(e){
+        const type = e.currentTarget.dataset.type;
         if(this.checkInput()){
-          this.register();
+          if(type != 'misspwd'){
+            this.register();
+          }else{
+            this.reset();
+          }
         }
       },
       /**
@@ -371,7 +409,7 @@ page{
           return false;
         }else{
           const pwdLen = this.pwd.length;
-            if(pwdLen < 4 || pwdLen >32){
+            if(pwdLen < 6 || pwdLen >32){
               wx.showToast({
               title: '请检查密码长度',
               icon: 'none'

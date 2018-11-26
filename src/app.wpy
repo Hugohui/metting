@@ -30,7 +30,9 @@ export default class extends wepy.app {
       'pages/intervier_list',
       'pages/mine',
       'pages/location',
-      'pages/candidate_date'
+      'pages/candidate_date',
+      'pages/job_detail_candidate',
+      'pages/test'
     ],
     window: {
       backgroundTextStyle: 'light',

@@ -89,7 +89,7 @@
     }
 
     data = {
-      currentReasonIndex: 'no',
+      currentReasonIndex: 0,
       isShow: false
     }
 

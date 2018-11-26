@@ -175,7 +175,7 @@ page{
       pixel: state.system.pixel,
       navHeight: state.system.navHeight,
       currentIndex: 'no',
-      address: '暂未定位'
+      address: store.getState().addressInfo.addressInfo.address || '暂未定位'
     }
 
     methods = {
@@ -203,6 +203,8 @@ page{
     }
 
     onLoad() {
+      this.address = store.getState().addressInfo.addressInfo.address;
+      this.$apply();
     }
   }
 </script>

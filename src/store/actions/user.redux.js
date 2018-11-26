@@ -4,7 +4,8 @@ const SET_USER = 'SET_USER';
 let userInfo = wx.getStorageSync("userInfo1") || {};
 const initState = {
     userInfo:userInfo,
-    user_id: ''
+    user_id: '',
+    loginType: ''
 }
 
 export function userReducer(state = initState, action) {

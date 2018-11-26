@@ -34,7 +34,8 @@ wx.getSetting({
               if(json.data.code == 1000){
                 store.dispatch(setUser({
                   user_id:json.data.data.userId,
-                  userInfo:options.userInfo
+                  userInfo:options.userInfo,
+                  loginType: 'wx'
                 }));
                 wx.setStorage({
                   key:"userInfo_v1.0.0",

@@ -157,7 +157,7 @@ page{
             <view class="phone__left">{{areaCodeArr[areaIndex].code}}<view class="line"></view></view>
             <view class="phone__right">
               <input placeholder="请输入{{areaCodeArr[areaIndex].phoneLength}}位手机号" placeholder-class="placeholder" value="{{phoneNum}}" bindinput="bindinputPhone"/>
-              <image src="../images/icon-reset-phone.png"/>
+              <image src="../images/icon-reset-phone.png" @tap="clearPhoneNum"/>
             </view>
           </view>
           <view class="operator">
@@ -197,9 +197,11 @@ page{
   import api from '@/api/api'
   import wxLogin from '@/utils/wxLogin'
   import { getStore, connect } from 'wepy-redux'
+  import { setUser } from '@/store/actions/user.redux'
   const store = getStore()
   export default class Index extends wepy.page {
     config = {
+      disableScroll: true
     }
     components = {
     }
@@ -240,9 +242,21 @@ page{
         }
       });
       if(json.data.err_no == 0){
-        wx.navigateTo({
-          url: './select_entry'
+        const realData = json.data.results;
+        store.dispatch(setUser({
+          userInfo: realData,
+          loginType: 'phone'
+        }));
+        if(realData.category_id == 1){
+          wx.navigateTo({
+          url: './job_list'
         });
+        }else{
+          wx.navigateTo({
+            url: './candidate_date'
+          });
+        }
+        
       }
     }
 
@@ -299,6 +313,10 @@ page{
         this.pwd = e.detail.value;
         this.$apply();
       },
+      clearPhoneNum(){
+        this.phoneNum = '';
+        this.$apply();
+      }
     }
 
     /**
@@ -328,7 +346,7 @@ page{
           return false;
         }else{
           const pwdLen = this.pwd.length;
-            if(pwdLen < 4 || pwdLen >32){
+            if(pwdLen < 6 || pwdLen >32){
               wx.showToast({
               title: '请检查密码长度',
               icon: 'none'

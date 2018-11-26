@@ -7,9 +7,9 @@ const wxRequest = async(params = {}, url) => {
       tip.loading();
     }
     let data = params.query || {};
-    // data.app_version = config.version_name
-    // data.app_name = config.app_name;
-    // data.app_id = config.app_id;
+    data.app_version = config.version_name
+    data.app_name = config.app_name;
+    data.app_id = config.app_id;
     let res = await wepy.request({
         url: url,
         method: params.method || 'GET',

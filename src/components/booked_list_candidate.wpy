@@ -1,0 +1,100 @@
+<style type="less">
+ .booked-candidate-list{
+   width: 100%;
+   font-family: PingFangSC-Regular;
+    .items{
+      margin-top: 10rpx;
+      .item{
+        background-color: #fff;
+        padding: 18rpx 0 18rpx 30rpx;
+        margin-top: 10rpx;
+        font-size: 26rpx;
+        .title{
+          height: 70rpx;
+          line-height: 70rpx;
+          border-bottom: 2rpx solid #E5E5E5;
+          box-sizing: border-box;
+          color: #EE282C;
+        }
+        .candidate-list-content{
+          color: #999;
+          margin-top: 30rpx;
+          position: relative;
+          .job{
+            font-size: 34rpx;
+            color: #222222;
+          }
+          .date,.phone{
+            line-height: 37rpx;
+          }
+          text{
+            color: #EE282C;
+          }
+          .toDetail{
+            position: absolute;
+            top: 50%;
+            right: 30rpx;
+            transform: translateY(-50%);
+            width: 16rpx;
+            height: 26rpx;
+            image{
+              width: 100%;
+              height: 100%;
+            }
+          }
+        }
+      }
+    }
+ }
+</style>
+<template>
+  <view class="booked-candidate-list">
+    <view class="items">
+      <repeat for="{{jobList}}">
+        <view class="item">
+          <view class="title">某某公司</view>
+          <view class="candidate-list-content" @tap="toJobDetail">
+            <view class="job">CFO</view>
+            <view class="date">面试时间：<text>10:00-10:45</text></view>
+            <view class="phone">联系电话:13987654567</view>
+            <view class="toDetail">
+              <image src="../images/icon-arrow-right.png"/>
+            </view>
+          </view>
+        </view>
+      </repeat>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class BookedListCandidate extends wepy.component {
+    props = {
+      
+    }
+
+    components = {
+    }
+
+    data = {
+      jobList: [1,2,3]
+    }
+
+    methods = {
+     setData(data){
+       this.jobList = [1,2,3]
+       this.$apply();
+     },
+     toJobDetail(){
+       wx.navigateTo({
+          url: './job_detail_candidate'
+        });
+     }
+    }
+
+    onLoad(){  
+      
+    }
+  }
+</script>

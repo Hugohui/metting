@@ -1,0 +1,183 @@
+<style lang="less">
+page{
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  overflow: hidden;
+  .slide-container{
+    width: 100%;
+    height: 100%;
+    .items{
+      height: 600rpx;
+      margin-top: 200rpx;
+      display: flex;
+      .item{
+        flex: 1;
+        .inner{
+          width: 20rpx;
+          height: 100%;
+          margin: 0 auto;
+          background: #ccc;
+          border-radius: 10rpx;
+          overflow: hidden;
+          .inner__speed{
+            width: 100%;
+            height: 60rpx;
+            font-size: 20rpx;
+            &.active{
+              background-color: #0A4C90;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>
+<template>
+  <view class="slide-container">
+    <view class="items">
+      <repeat for="{{5}}" item="index1">
+        <view class="item" data-id="{{index1}}" bindtouchstart="bindtouchstart" bindtouchmove="bindtouchmove" bindtouchend="bindtouchend"> 
+          <view class="inner">
+            <repeat for="{{10}}"  key="index">
+              <view class="inner__speed {{status[index1][index]?'active':''}}"></view>
+            </repeat>
+          </view>
+        </view>        
+      </repeat>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+  import { getStore, connect } from 'wepy-redux'
+  const store = getStore()
+
+export default class Test extends wepy.page {
+    config = {
+      disableScroll: true
+    }
+    components = {
+    }
+
+    const = {
+    }
+
+    data = {
+      steepMap:[],
+      currentWeekIndex: 0,
+      startIndex: '',
+      endIndex: '',
+      status:{0:{},1:{},2:{},3:{},4:{}},
+      pixel: store.getState().system.pixel,
+      innerH: 60,
+      lastIndex: ''
+    }
+
+    computed = {
+
+    }
+    methods = {
+      bindtouchstart(e){
+        this.currentWeekIndex = e.currentTarget.dataset.id;   
+        this.startY = e.changedTouches[0].pageY*this.pixel;
+        this.steepMap.forEach((item,key)=>{
+          if(this.startY>=item[0] && this.startY<=item[1]){
+            this.startIndex = key;
+            this.$apply();
+            return;
+          }
+        });
+      },
+      bindtouchmove(e){
+        
+
+
+        // const endY = e.changedTouches[0].pageY*this.pixel;
+        // this.steepMap.forEach((item,key)=>{
+        //   if(endY>=item[0] && endY<=item[1]){
+        //     this.endIndex = key;
+        //     for(let i = this.startIndex;i<=this.endIndex;i++){
+              
+        //       // console.log(key);
+              
+        //       if(this.lastIndex != key){
+        //         console.log(this.lastIndex === key); 
+        //         console.log(this.lastIndex+'======'+key);
+        //         this.status[this.currentWeekIndex][i] = !this.status[this.currentWeekIndex][i];
+                
+        //       } 
+        //     }
+        //     this.lastIndex = key;
+        //     this.$apply();
+        //     return;
+        //   }
+        // });
+      },
+      bindtouchend(e){
+        console.log('startIndex:'+this.startIndex,'endIndex:'+this.endIndex,'lastIndex:'+this.lastIndex);
+
+        // const endY = e.changedTouches[0].pageY*this.pixel;
+        // this.steepMap.forEach((item,key)=>{
+        //   if(endY>=item[0] && endY<=item[1]){
+        //     this.endIndex = key;
+        //     if(this.endIndex != this.startIndex){
+        //       for(let i = this.startIndex;i<=this.endIndex;i++){          
+        //         this.status[this.currentWeekIndex][i] = true;
+        //       }
+        //     }
+        //     this.$apply();
+        //     return;
+        //   }
+        // });
+const endY = e.changedTouches[0].pageY*this.pixel;
+        console.log(e);
+      
+        this.steepMap.forEach((item,key)=>{
+          if(endY>=item[0] && endY<=item[1]){
+            this.endIndex = key;
+            this.$apply();
+            for(let i = this.startIndex;i<=this.endIndex;i++){
+              if(this.status[this.currentWeekIndex][i]){
+                if(this.lastIndex != key){
+                  this.status[this.currentWeekIndex][i] = false;
+                  console.log('hide');
+                }
+              }else{
+                if(this.lastIndex != key){
+                  console.log("show");
+                  this.status[this.currentWeekIndex][i] = true;
+                }
+              }
+              
+              
+
+            }
+          }
+          
+          this.lastIndex = this.endIndex;
+          this.$apply();
+
+        });
+
+      }
+    }
+
+    events = {
+
+    }
+
+    onLoad(option) {
+      for(let i = 0;i<5;i++){
+        for(let j = 0;j<10;j++){
+          this.status[i][j] = false;
+        }
+      }
+      for(let i = 0;i<10;i++){
+        this.steepMap.push([200+i*this.innerH,199+(i+1)*this.innerH]);
+      }
+    }
+  }
+</script>

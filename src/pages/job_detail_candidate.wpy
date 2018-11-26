@@ -3,8 +3,9 @@ page{
   width: 100%;
   height: 100%;
   font-family: 'PingFangSC-Semibold';
+  overflow: hidden;
 }
-  .candidate-date-container{
+  .job_detail_candidate-container{
     width: 100%;
     height: 100%;
     .custom-nav-container{
@@ -48,7 +49,6 @@ page{
         height: auto;
         position: relative;
         padding-top: 10rpx;
-        padding-bottom: 176rpx;
         min-height: 100%;
         box-sizing: border-box;
         .basic-info{
@@ -196,104 +196,12 @@ page{
             }
           }
         }
-        .no_book{
-          margin-top: 343rpx;
-          text-align: center;
-          image{
-            width: 290rpx;
-            height: 258rpx;
-          }
-          view{
-            font-size:30rpx;
-            font-family:PingFangSC;
-            font-weight:400;
-            margin-top: 61rpx;
-          }
-        }
-        &>view>.items{
-          .item{
-            height: 170rpx;
-            position: relative;
-            margin-top:10rpx;
-            background-color: #fff;
-            padding: 27rpx 30rpx;
-            box-sizing: border-box;
-            .job{
-              height: 64rpx;
-              line-height: 64rpx;
-              font-size: 34rpx;
-              color: #222;
-            }
-            .company{
-              height: 53rpx;
-              line-height: 53rpx;
-              font-size: 26rpx;
-              color: #999;
-            }
-            image{
-              position: absolute;
-              top: 50%;
-              right: 30rpx;
-              width: 16rpx;
-              height: 26rpx;
-              transform: translateY(-50%);
-            }
-          }
-        }
-        .bottom_tab{
-          position: fixed;
-          z-index: 100;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          height: 88rpx;
-          line-height: 88rpx;
-          display: flex;
-          background-color: #fff;
-          font-size:34rpx;
-          font-family:PingFangSC;
-          font-weight:400;
-          text-align: center;
-          color: #16589B;
-          &>view{
-            flex: 1;
-            position: relative;
-            height: 100%;
-            &.active{
-              background: linear-gradient(#2364A6, #0A4C90);
-              color: #fff;
-            }
-            .num{
-              position: absolute;
-              top: 50%;
-              right: 44rpx;
-              transform: translateY(-50%);
-              width: 51rpx;
-              height: 51rpx;
-              line-height: 51rpx;
-              text-align: center;
-              border-radius: 50%;
-              background: linear-gradient(#2364A6, #0A4C90);
-              color: #fff;
-            }
-          }
-        }
-        .no_job{
-          position: absolute;
-          bottom: 40rpx;
-          width: 100%;
-          height: 176rpx;
-          text-align: center;
-          line-height: 176rpx;
-          color: #B2B2B2;
-          font-size: 20rpx;
-        }
       }
     }
   }
 </style>
 <template>
-  <view class="candidate-date-container">
+  <view class="job_detail_candidate-container">
     <view class="custom-nav-container">
       <view class="statusBar" style="height:{{statusBarHeight*pixel}}rpx"></view>
       <view class="title" style="height:{{navHeight}}rpx;line-height:{{navHeight}}rpx">
@@ -305,28 +213,65 @@ page{
     </view>
     <view class="wrap" style="padding-top:{{(statusBarHeight*pixel)+navHeight}}rpx">
       <view class="content">
-        <view wx:if="{{currentIndex == 0}}">
-          <view class="items" wx:if="{{feedList.length>0}}">
-            <repeat wx:for="{{feedList}}" wx:key="index">
-              <view class="item" @tap="toJobDetail">
-                <view class="job">CFO</view>
-                <view class="company">我是某某公司的全称名称</view>
-                <image src="../images/icon-arrow-right.png"/>
-              </view>
-            </repeat>
+        <view>
+          <view class="basic-info">
+            <view class="item">
+              <view class="title">具体时间</view>
+              <view class="desc red-text">{{currentDataText}}</view>
+            </view>
+            <view class="item">
+              <view class="title">面试地址</view>
+              <view class="desc">办公室</view>
+            </view>
+            <view class="item">
+              <view class="title">面试岗位</view>
+              <view class="desc">CFO</view>
+            </view>
+            <view class="item">
+              <view class="title">候选人</view>
+              <view class="desc">我是名字</view>
+            </view>
+            <view class="item">
+              <view class="title">联系电话</view>
+              <view class="desc">我是电话</view>
+            </view>
           </view>
-        <view class="no_book" wx:else>
-          <image src="../images/icon-no-book.png"/>
-          <view>您还没有相关的面试邀请</view>
-        </view>
-        </view>
-        <view wx:else>
-          <booked-list/>
-        </view>
-        <view class="bottom_tab">
-          <view class="{{currentIndex == 0?'active':''}}" @tap="toggleTab" data-index="0">时间预约</view>
-          <view class="{{currentIndex == 1?'active':''}}" @tap="toggleTab" data-index="1">已约管理
-            <view class="num" wx:if="{{unReadNum>0}}">{{unReadNum}}</view>
+          <view class="select-time">
+            <view class="title">选择面试时间</view>
+            <view class="status">
+              <view>
+                <view class="color first"></view><text>已约</text>
+              </view>
+              <view>
+                <view class="color"></view><text>可约</text>
+              </view>
+              <view>
+                <view class="color last"></view><text>已选</text>
+              </view>
+            </view>
+            <view class="week">
+              <view class="header">
+                <repeat wx:for="{{5}}" wx:key="index">
+                  <view class="{{currentWeek == item?'active':''}}" @tap="selectWeek" data-index="{{item}}">星期{{weekMap[item]}}
+                    <view class="arrow_down" wx:if="{{currentWeek == item}}">
+                      <image src="../images/arrow_week_down.png"/>
+                    </view>
+                  </view>
+                </repeat>
+              </view>
+              <view class="body">
+                <repeat wx:for="{{dateList}}" wx:key="index">
+                  <view @tap="selectDateItem" data-text="12:30-13:45" data-index="{{index}}" class="{{currentDateItem == index?'active':''}}">12:30-13:45</view>
+                </repeat>
+                <repeat wx:for="{{4-dateList.length%4}}" wx:key="index">
+                  <view class="placeholder"></view>
+                </repeat>
+              </view>
+              <view class="btn-group">
+                <view class="btn confirm" @tap="confirm">确认</view>
+                <view class="btn cancle" @tap="cancle">不合适</view>
+              </view>
+            </view>
           </view>
         </view>
       </view>
@@ -344,7 +289,7 @@ page{
   const store = getStore()
   const state = store.getState()
 
-  export default class Mine extends wepy.page {
+  export default class JobDetailCandidate extends wepy.page {
     config = {
     }
     components = {
@@ -356,29 +301,17 @@ page{
       statusBarHeight: state.system.systemInfo.statusBarHeight,
       pixel: state.system.pixel,
       navHeight: state.system.navHeight,
-      title: '面试岗位列表',
+      title: '时间选择',
       currentIndex: 0,
-      unReadNum: 0,
+      unReadNum: 2,
+      jobList: [1],
       identity: '',
-      feedList: [],
+      weekMap:['一','二','三','四','五'],
+      currentWeek: 0,
+      dateList: [1,2,3,4,5,6,7,8],
+      feedList: [1,2,3,4,5,6,7,8],
+      currentDateItem: 1,
       currentDataText: '待选择'
-    }
-
-    /**
-     * 获取岗位列表
-     */
-    async getJobLists(){
-      let json = await api.getJobLists({
-        post:{
-          user_id:store.getState().user.userInfo.user_id,
-          category_id:store.getState().user.userInfo.category_id,
-          is_reserved: parseInt(this.currentIndex)+1
-        }
-      })
-      if(json.data.err_no == 0){
-        this.feedList = json.data.results;
-      }
-      this.$apply();
     }
 
     methods = {
@@ -391,17 +324,31 @@ page{
         this.title = this.currentIndex == 0?'面试岗位列表':'已约管理';
         this.$apply();
       },
-      toJobDetail(){
-        wx.navigateTo({
-          url: './job_detail_candidate'
+      /**
+       * 切换星期
+       */
+      selectWeek(e){
+        this.currentWeek = e.currentTarget.dataset.index;
+        this.$apply();
+      },
+      selectDateItem(e){
+        this.currentDateItem = e.currentTarget.dataset.index;
+        this.currentDataText = e.currentTarget.dataset.text;
+        this.$apply();
+      },
+      confirm(){
+        wx.showToast({
+          title: '已发送'
         });
-      }     
+      },
+      cancle(){
+        this.$invoke('cancle-candidate','setData');
+      }      
     }
 
     onLoad(option) {
       this.identity = option.identity;
-      this.getJobLists();
-      this.title = '面试岗位列表'
+      this.title = '时间选择'
     }
   }
 </script>

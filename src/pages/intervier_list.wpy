@@ -97,9 +97,50 @@ page{
             }
           }
         }
+        .bottom_tab{
+          position: fixed;
+          z-index: 100;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          height: 88rpx;
+          line-height: 88rpx;
+          display: flex;
+          background-color: #fff;
+          font-size:34rpx;
+          font-family:PingFangSC;
+          font-weight:400;
+          text-align: center;
+          color: #16589B;
+          &>view{
+            flex: 1;
+            position: relative;
+            height: 100%;
+            &.active{
+              background: linear-gradient(#2364A6, #0A4C90);
+              color: #fff;
+            }
+            .num{
+              position: absolute;
+              top: 50%;
+              right: 44rpx;
+              transform: translateY(-50%);
+              width: 51rpx;
+              height: 51rpx;
+              line-height: 51rpx;
+              text-align: center;
+              border-radius: 50%;
+              background: linear-gradient(#2364A6, #0A4C90);
+              color: #fff;
+            }
+            &:nth-child(2){
+              // padding-right: 20rpx;
+            }
+          }
+        }
         .no_job{
           position: absolute;
-          bottom: 0;
+          bottom: 40rpx;
           width: 100%;
           height: 176rpx;
           text-align: center;
@@ -138,6 +179,12 @@ page{
           <view>您还没有相关的面试邀请</view>
         </view>
         <view class="no_job" wx:if="{{feedList.length>0}}">没有啦</view>
+        <view class="bottom_tab">
+          <view class="{{currentIndex == 0?'active':''}}" @tap="toggleTab" data-index="0">时间预约</view>
+          <view class="{{currentIndex == 1?'active':''}}" @tap="toggleTab" data-index="1">已约管理
+            <view class="num" wx:if="{{unReadNum>0}}">{{unReadNum}}</view>
+          </view>
+        </view>
       </view>
     </view>
   </view>
@@ -164,6 +211,7 @@ page{
       navHeight: state.system.navHeight,
       currentIndex: 'no',
       feedList:[1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3],
+      currentIndex: 0
     }
 
     /**
@@ -192,6 +240,12 @@ page{
         wx.navigateTo({
           url: './candidate_date'
         });
+      },
+      toggleTab(e){
+        this.currentIndex = e.currentTarget.dataset.index;
+        this.unReadNum = 0;
+        this.title = this.currentIndex == 0?'时间选择':'已约管理';
+        this.$apply();
       }
     }
     onLoad() {

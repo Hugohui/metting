@@ -262,22 +262,33 @@ page{
     /**
      * 提交信息
      */
-    async getAreaCode(){
-      let json = await api.getAreaCode({
-        post:{
-          user_id: store.getState().user.user_id,
-          name: this.name,
+    async updateInfo(){
+      const params = {
+          user_id: store.getState().user.userInfo.user_id,
+          real_name: this.name,
+          sex: this.sixArr[this.currentSixIndex],
+          category_id: parseInt(this.enter_type)+1,
           company: this.company,
           position: this.position,
           phone: this.phone,
-          email: this.email,
-          six: this.sixArr[this.currentSixIndex]
-        }
+          email: this.email
+      }
+      let json = await api.updateInfo({
+        post:params
       })
       if(json.data.err_no == 0){
         wx.showToast({
           title: '提交成功'
         });
+        if(this.enter_type == 1){
+          wx.navigateTo({
+            url: './intervier_list'
+          });
+        }else{
+          wx.navigateTo({
+            url: './job_list'
+          });
+        }
       }
       this.$apply();
     }
@@ -288,15 +299,7 @@ page{
       },
       confirm(){
         if(this.checkInput()){
-          if(this.enter_type == 1){
-            wx.navigateTo({
-              url: './intervier_list'
-            });
-          }else{
-            wx.navigateTo({
-              url: './job_list'
-            });
-          }
+          this.updateInfo();
         }
       },
       bindPickerChange(e){
@@ -408,6 +411,7 @@ page{
 
     onLoad(option) {
       this.enter_type = option.enter_type;
+      console.log(store.getState().user);
       this.$apply();
     }
   }

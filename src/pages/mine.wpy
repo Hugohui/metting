@@ -141,21 +141,26 @@ page{
     </view>
     <view class="wrap" style="padding-top:{{(statusBarHeight*pixel)+navHeight}}rpx">
       <view class="content">
-        <view class="basic-info">
-          <view class="item">
-            <view class="title">面试地址</view>
-            <view class="desc" @tap="selectLocation">{{address}}
-              <image src="../images/icon-select-location.png"/>
+        <view wx:if="{{currentIndex == 0}}">
+          <view class="basic-info">
+            <view class="item">
+              <view class="title">面试地址</view>
+              <view class="desc" @tap="selectLocation">{{address}}
+                <image src="../images/icon-select-location.png"/>
+              </view>
+            </view>
+            <view class="item">
+              <view class="title">面试岗位</view>
+              <view class="desc">办公室</view>
+            </view>
+            <view class="item">
+              <view class="title">候选人</view>
+              <view class="desc">CFO</view>
             </view>
           </view>
-          <view class="item">
-            <view class="title">面试岗位</view>
-            <view class="desc">办公室</view>
-          </view>
-          <view class="item">
-            <view class="title">候选人</view>
-            <view class="desc">CFO</view>
-          </view>
+        </view>
+        <view wx:else>
+          <booked-list />
         </view>
         <view class="bottom_tab">
           <view class="{{currentIndex == 0?'active':''}}" @tap="toggleTab" data-index="0">时间预约</view>
@@ -172,6 +177,7 @@ page{
   import wepy from 'wepy'
   import api from '@/api/api'
   import mineJobList from '@/components/mine_job_list'
+  import BookedListInterviewer from '@/components/booked_list_interviewer'
   import DateBook from '@/components/date_book'
   import { getStore, connect } from 'wepy-redux'
   const store = getStore()
@@ -182,7 +188,8 @@ page{
     }
     components = {
       'date-book': DateBook,
-      'mine-job-list':mineJobList
+      'mine-job-list':mineJobList,
+      'booked-list':BookedListInterviewer
     }
 
     data = {
@@ -203,6 +210,9 @@ page{
       },
       toggleTab(e){
         this.currentIndex = e.currentTarget.dataset.index;
+        this.unReadNum = 0;
+        this.title = this.currentIndex == 0?'时间选择':'已约管理';
+        this.$apply();
       },
       selectLocation(){
         wx.navigateTo({
