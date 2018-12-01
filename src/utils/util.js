@@ -9,7 +9,7 @@ function getCurrentTime() {
   var f = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
   var s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
   var rand = Math.round(Math.random() * 899 + 100);
-  keep = y + '' + m + '' + d + '' + h + '' + f + '' + s;
+  keep = y + '-' + m + '-' + d + ' ' + h + ':' + f + ':' + s;
   return keep; //20160614134947
 }
 function getTimeStamp() {
@@ -264,6 +264,22 @@ function compareVersion(current,target) {
   return cu*10000>=ta*10000;
 }
 
+function timeFormat(dateObj,format){
+  var args = {
+    "M+": dateObj.getMonth() + 1,
+    "d+": dateObj.getDate(),
+    "h+": dateObj.getHours(),
+    "m+": dateObj.getMinutes(),
+    "s+": dateObj.getSeconds(),
+    "q+": Math.floor((dateObj.getMonth() + 3) / 3), //quarter
+  };
+  if (/(y+)/.test(format)) format = format.replace(RegExp.$1, (dateObj.getFullYear() + "").substr(4 - RegExp.$1.length));
+  for (var i in args) {
+      var n = args[i];
+      if (new RegExp("(" + i + ")").test(format)) format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? n : ("00" + n).substr(("" + n).length));
+  }
+  return format;
+}
 
 module.exports = {
   getCurrentTime: getCurrentTime,
@@ -286,6 +302,6 @@ module.exports = {
   generateUploadFeedbackData,
   setNetwork,
   isConnectedNetwork,
-  compareVersion
-
+  compareVersion,
+  timeFormat
 }

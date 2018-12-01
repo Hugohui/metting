@@ -25,22 +25,24 @@ wx.getSetting({
           success:function(res){
             api.wxLogin({
               post: {
-                code: res.code,
+                CODE: res.code,
                 nick: options.userInfo.nickName,
                 pic: options.userInfo.avatarUrl
               },
               showLoading:options.showLoading
             }).then(function(json){
-              if(json.data.code == 1000){
+              if(json.data.err_no == 0){
                 store.dispatch(setUser({
-                  user_id:json.data.data.userId,
-                  userInfo:options.userInfo,
+                  userInfo:json.data.results,
                   loginType: 'wx'
                 }));
                 wx.setStorage({
                   key:"userInfo_v1.0.0",
-                  data:options.userInfo
+                  data:json.data.results
                 });
+                if(typeof options.callback == 'function'){
+                  options.callback(json.data.results);
+                }
               }
             });
           }

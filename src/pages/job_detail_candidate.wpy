@@ -151,7 +151,7 @@ page{
               justify-content: space-between;
               flex-wrap: wrap;
               &>view{
-                width: 157rpx;
+                width: 170rpx;
                 height: 80rpx;
                 border: 2rpx solid #979797;
                 margin-bottom: 20rpx;
@@ -168,6 +168,11 @@ page{
                   background-color: #ED2529;
                   color: #fff;
                   border-color: #ED2529;
+                }
+                &.unBook{
+                  background-color: #EEE;
+                  color: #B2B2B2;
+                  border:none;
                 }
               }
             }
@@ -219,21 +224,21 @@ page{
               <view class="title">具体时间</view>
               <view class="desc red-text">{{currentDataText}}</view>
             </view>
-            <view class="item">
+            <view class="item" wx:if="{{type == 'booked'}}">
               <view class="title">面试地址</view>
-              <view class="desc">办公室</view>
+              <view class="desc">{{jobDetail.address}}</view>
             </view>
             <view class="item">
               <view class="title">面试岗位</view>
-              <view class="desc">CFO</view>
+              <view class="desc">{{jobDetail.post_name}}</view>
             </view>
             <view class="item">
               <view class="title">候选人</view>
-              <view class="desc">我是名字</view>
+              <view class="desc">{{jobDetail.interviewer_name}}</view>
             </view>
             <view class="item">
               <view class="title">联系电话</view>
-              <view class="desc">我是电话</view>
+              <view class="desc">{{jobDetail.address}}</view>
             </view>
           </view>
           <view class="select-time">
@@ -260,8 +265,9 @@ page{
                 </repeat>
               </view>
               <view class="body">
-                <repeat wx:for="{{dateList}}" wx:key="index">
-                  <view @tap="selectDateItem" data-text="12:30-13:45" data-index="{{index}}" class="{{currentDateItem == index?'active':''}}">12:30-13:45</view>
+                <repeat wx:for="{{JobTime}}" wx:key="index">
+                  <view class="{{item.status == 0?'unBook':''}}" wx:if="{{item.status == 0}}">{{item.text}}</view>
+                  <view @tap="selectDateItem" data-text="{{item.text}}" data-time="{{[item.start_time,item.end_time]}}" data-index="{{index}}" data-id="{{item.id}}" class="{{currentDateItem == index?'active':''}}" wx:else>{{item.text}}</view>
                 </repeat>
                 <repeat wx:for="{{4-dateList.length%4}}" wx:key="index">
                   <view class="placeholder"></view>
@@ -282,6 +288,7 @@ page{
 
 <script>
   import wepy from 'wepy'
+  import util from '@/utils/util'
   import api from '@/api/api'
   import cancleCandidate from '@/components/cancle_candidate'
   import BookedListCandidate from '@/components/booked_list_candidate'
@@ -297,6 +304,65 @@ page{
       'booked-list':BookedListCandidate
     }
 
+    constData = {
+      id: '',
+      submitTime: []
+    }
+
+    /**
+     * 获取岗位信息
+     */
+    async getJobDetail(){
+      let json = await api.getJobDetail({
+        post:{
+          user_id:store.getState().user.userInfo.user_id,
+          category_id:store.getState().user.userInfo.category_id,
+          interview_id: this.constData.id
+        }
+      })
+      if(json.data.err_no == 0){
+        this.jobDetail = json.data.results;
+      }
+      this.$apply();
+    }
+
+    /**
+     * 获取岗位时间
+     */
+    async getJobTimeable(){
+      let json = await api.getJobTimeable({
+        post:{
+          user_id:store.getState().user.userInfo.user_id,
+          date: this.currentTime,
+          interview_id: this.constData.id
+        }
+      })
+      if(json.data.err_no == 0){
+        this.JobTime = json.data.results;
+      }
+      this.$apply();
+    }
+
+    /**
+     * 提交时间
+     */
+    async submitBookTime(){
+      let json = await api.submitBookTime({
+        post:{
+          user_id:store.getState().user.userInfo.user_id,
+          interview_id: this.constData.id,
+          start_time: this.constData.submitTime[0],
+          end_time: this.constData.submitTime[1]
+        }
+      })
+      if(json.data.err_no == 0){
+        wx.showToast({
+          title: '已发送'
+        });
+      }
+      this.$apply();
+    }
+
     data = {
       statusBarHeight: state.system.systemInfo.statusBarHeight,
       pixel: state.system.pixel,
@@ -304,14 +370,21 @@ page{
       title: '时间选择',
       currentIndex: 0,
       unReadNum: 2,
-      jobList: [1],
       identity: '',
       weekMap:['一','二','三','四','五'],
       currentWeek: 0,
       dateList: [1,2,3,4,5,6,7,8],
       feedList: [1,2,3,4,5,6,7,8],
-      currentDateItem: 1,
-      currentDataText: '待选择'
+      currentDateItem: 'no',
+      currentDateId: '',
+      currentDataText: '待选择',
+      jobDetail: null,
+      type: '',
+      JobTime: null,
+      currentTime: '',
+      newDate: null,
+      lastDateItem: 'no',
+      lastWeek: 'no'
     }
 
     methods = {
@@ -328,27 +401,82 @@ page{
        * 切换星期
        */
       selectWeek(e){
-        this.currentWeek = e.currentTarget.dataset.index;
+        const index = e.currentTarget.dataset.index;
+        if(this.currentWeek == index){
+          return;
+        }
+        this.currentDateItem = 'no';
+        if(index == this.lastWeek){
+          this.currentDateItem = this.lastDateItem;
+        }
+        this.getTime(index-this.currentWeek);
+        this.currentWeek = index;
+        this.getJobTimeable();
         this.$apply();
       },
       selectDateItem(e){
         this.currentDateItem = e.currentTarget.dataset.index;
+        this.lastDateItem = this.currentDateItem;
+        this.lastWeek = this.currentWeek;
+        this.currentDateId = e.currentTarget.dataset.id;
         this.currentDataText = e.currentTarget.dataset.text;
+        this.constData.submitTime = e.currentTarget.dataset.time;
         this.$apply();
       },
       confirm(){
-        wx.showToast({
-          title: '已发送'
-        });
+        if(this.currentDataText == '待选择'){
+          wx.showToast({
+            title: '请选择时间',
+            icon: 'none'
+          });
+          return;
+        }
+        this.submitBookTime();
       },
       cancle(){
         this.$invoke('cancle-candidate','setData');
       }      
     }
 
+    /**
+     * 获取选中日期的第n天
+     * @param n { Number } 前/后n天，前为负数，后为正数
+     * @return {string} 时间字符串
+     */
+    getTime(n){
+      const stringDate = new Date(this.newDate.getTime() + n*24*60*60*1000);
+      this.currentTime =  util.timeFormat(stringDate,"yyyy-MM-dd");
+      this.newDate = stringDate;
+      this.$apply();
+    }
+
+    onShow(){
+      this.getJobDetail();
+      this.getJobTimeable();
+    }
+
     onLoad(option) {
       this.identity = option.identity;
-      this.title = '时间选择'
+      this.constData.id = option.id;
+      this.title = '时间选择';
+      this.type = option.type;
+      const day = new Date().getDay();
+      const curDate = new Date();
+      let stringDate = null;
+      if(day == 6 || day == 7){
+        this.currentWeek = 0;
+        if(day == 6){
+          stringDate = new Date(curDate.getTime() + 2*24*60*60*1000)
+        }else{
+          stringDate = new Date(curDate.getTime() + 24*60*60*1000)
+        }
+      }else{
+        this.currentWeek = day - 1;
+        stringDate = curDate;
+      }
+      this.newDate = stringDate;
+      this.currentTime = util.timeFormat(stringDate,"yyyy-MM-dd")
+      this.$apply();
     }
   }
 </script>

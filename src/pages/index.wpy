@@ -157,7 +157,7 @@ page{
             <view class="phone__left">{{areaCodeArr[areaIndex].code}}<view class="line"></view></view>
             <view class="phone__right">
               <input placeholder="请输入{{areaCodeArr[areaIndex].phoneLength}}位手机号" placeholder-class="placeholder" value="{{phoneNum}}" bindinput="bindinputPhone"/>
-              <image src="../images/icon-reset-phone.png" @tap="clearPhoneNum"/>
+              <image src="../images/icon-reset-phone.png" @tap="clearPhoneNum" style="z-index: 10;"/>
             </view>
           </view>
           <view class="operator">
@@ -247,17 +247,24 @@ page{
           userInfo: realData,
           loginType: 'phone'
         }));
-        if(realData.category_id == 1){
+        this.checkIdentify(realData.category_id);
+      }
+    }
+
+    checkIdentify(category_id){
+      if(category_id == 1){
           wx.navigateTo({
           url: './job_list'
         });
-        }else{
+        }else if(category_id == 2){
           wx.navigateTo({
             url: './candidate_date'
           });
+        }else{
+          wx.navigateTo({
+            url: './select_entry'
+          });
         }
-        
-      }
     }
 
     methods = {
@@ -265,9 +272,15 @@ page{
        * 微信登录
        */
       authorizeLogin(e){
+        let _this = this;
         if(e.detail.userInfo){
           const option = {
-            userInfo: e.detail.userInfo
+            userInfo: e.detail.userInfo,
+            callback: function (params) {
+              if(params){
+                _this.checkIdentify(params.category_id);
+              }
+            }
           }
           wxLogin.login(option);
         }

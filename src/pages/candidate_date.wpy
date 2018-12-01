@@ -308,9 +308,9 @@ page{
         <view wx:if="{{currentIndex == 0}}">
           <view class="items" wx:if="{{feedList.length>0}}">
             <repeat wx:for="{{feedList}}" wx:key="index">
-              <view class="item" @tap="toJobDetail">
-                <view class="job">CFO</view>
-                <view class="company">我是某某公司的全称名称</view>
+              <view class="item" @tap="toJobDetail" data-id="{{item.id}}">
+                <view class="job">{{item.post_name}}</view>
+                <view class="company">{{item.company}}</view>
                 <image src="../images/icon-arrow-right.png"/>
               </view>
             </repeat>
@@ -376,7 +376,24 @@ page{
         }
       })
       if(json.data.err_no == 0){
-        this.feedList = json.data.results;
+        this.feedList = json.data.results.lists;
+        this.unReadNum = json.data.results.unread_num;
+      }
+      this.$apply();
+    }
+
+    /**
+     * 获取已约列表
+     */
+    async getBookedJobLists(){
+      let json = await api.getBookedJobLists({
+        post:{
+          user_id:store.getState().user.userInfo.user_id
+        }
+      })
+      if(json.data.err_no == 0){
+        this.feedList = json.data.results.lists;
+        this.$invoke('booked-list','setData',this.feedList);
       }
       this.$apply();
     }
@@ -387,15 +404,26 @@ page{
       },
       toggleTab(e){
         this.currentIndex = e.currentTarget.dataset.index;
-        this.unReadNum = 0;
-        this.title = this.currentIndex == 0?'面试岗位列表':'已约管理';
+        if(this.currentIndex == 0){
+          this.title = '面试岗位列表';
+          this.getJobLists();
+        }else{
+          this.unReadNum = 0;
+          this.title = '已约管理';
+          this.getBookedJobLists();
+        }
         this.$apply();
       },
-      toJobDetail(){
+      toJobDetail(e){
+        const id = e.currentTarget.dataset.id;
         wx.navigateTo({
-          url: './job_detail_candidate'
+          url: './job_detail_candidate?id='+id+'&type=book'
         });
       }     
+    }
+
+    onShow(){
+      this.getBookedJobLists();
     }
 
     onLoad(option) {

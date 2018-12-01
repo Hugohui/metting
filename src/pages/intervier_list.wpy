@@ -211,7 +211,8 @@ page{
       navHeight: state.system.navHeight,
       currentIndex: 'no',
       feedList:[1,2,3,1,2,3,1,2,3,1,2,3,1,2,3,1,2,3],
-      currentIndex: 0
+      currentIndex: 0,
+      unReadNum: 3
     }
 
     /**

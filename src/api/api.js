@@ -14,7 +14,11 @@ const updateInfo = (params) => wxPost(params, meetingApi + 'account/info');
 const getInterviewList = (params) => wxPost(params, meetingApi + 'interview/list');
 const getVerifyCode = (params) => wxPost(params, meetingApi + 'sms/verify');
 const getAreaCode = (params) => wxPost(params, meetingApi + 'sms/code'); 
-const getJobLists = (params) => wxPost(params, meetingApi + 'interview/lists');
+const getJobLists = (params) => wxPost(params, meetingApi + 'interview/index_lists');
+const getJobDetail = (params) => wxPost(params, meetingApi + 'interview/info');
+const getBookedJobLists = (params) => wxPost(params, meetingApi + 'interview/candidate_lists');
+const getJobTimeable = (params) => wxPost(params, meetingApi + 'interview/timeable');
+const submitBookTime = (params) => wxPost(params, meetingApi + 'interview/submit');
 
 export default {
     login,
@@ -25,5 +29,9 @@ export default {
     getVerifyCode,
     getAreaCode,
     getInterviewList,
-    getJobLists
+    getJobLists,
+    getJobDetail,
+    getBookedJobLists,
+    getJobTimeable,
+    submitBookTime
 }

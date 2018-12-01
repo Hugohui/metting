@@ -45,11 +45,25 @@
         }
       }
     }
+    .no_book{
+      margin-top: 343rpx;
+      text-align: center;
+      image{
+        width: 290rpx;
+        height: 258rpx;
+      }
+      view{
+        font-size:30rpx;
+        font-family:PingFangSC;
+        font-weight:400;
+        margin-top: 61rpx;
+      }
+    }
  }
 </style>
 <template>
   <view class="booked-candidate-list">
-    <view class="items">
+    <view class="items" wx:if="{{jobList.length>0}}">
       <repeat for="{{jobList}}">
         <view class="item">
           <view class="title">某某公司</view>
@@ -63,6 +77,10 @@
           </view>
         </view>
       </repeat>
+    </view>
+    <view class="no_book" wx:else>
+      <image src="../images/icon-no-book.png"/>
+      <view>您还没有预约的面试邀请</view>
     </view>
   </view>
 </template>
@@ -78,17 +96,17 @@
     }
 
     data = {
-      jobList: [1,2,3]
+      jobList: []
     }
 
     methods = {
      setData(data){
-       this.jobList = [1,2,3]
+       this.jobList = data;
        this.$apply();
      },
      toJobDetail(){
        wx.navigateTo({
-          url: './job_detail_candidate'
+          url: './job_detail_candidate&type=booked'
         });
      }
     }

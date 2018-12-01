@@ -107,8 +107,8 @@ page{
     <view class="wrap" style="padding-top:{{(statusBarHeight*pixel)+navHeight}}rpx">
       <view class="content">
         <view class="items">
-          <repeat wx:for="{{15}}" wx:key="index">
-            <view class="item" @tap="goDateBook">CFO<image src="../images/icon-arrow-right.png"/></view>
+          <repeat wx:for="{{feedList}}" wx:key="index">
+            <view class="item" @tap="goDateBook" data-id="{{item.id}}">{{item.post_name}}<image src="../images/icon-arrow-right.png"/></view>
           </repeat>
         </view>
         <view class="no_job">没有啦</view>
@@ -136,19 +136,26 @@ page{
       statusBarHeight: state.system.systemInfo.statusBarHeight,
       pixel: state.system.pixel,
       navHeight: state.system.navHeight,
-      currentIndex: 'no'
+      currentIndex: 'no',
+      feedList:[]
     }
 
-    async getWeather() {
-      let json = await api.getWeather({
-        query: {
-          location:'beijing',
-          lang: 'en',
-          key: '044ffaa038cf4502a6972a0e81e5b65e',
-          unit: 'i'
+    /**
+     * 获取岗位列表
+     */
+    async getJobLists(){
+      let json = await api.getJobLists({
+        post:{
+          user_id:store.getState().user.userInfo.user_id,
+          category_id:store.getState().user.userInfo.category_id,
+          is_reserved: parseInt(this.currentIndex)+1
         }
-      });
-      console.log(json);
+      })
+      if(json.data.err_no == 0){
+        this.feedList = json.data.results.lists;
+        this.unReadNum = json.data.results.unread_num;
+      }
+      this.$apply();
     }
 
     methods = {
@@ -164,15 +171,17 @@ page{
       /**
        * 到时间预约
        */
-      goDateBook(){
+      goDateBook(e){
+        const id = e.currentTarget.dataset.id;
         wx.navigateTo({
-          url: './mine?identity=interviewer'
+          url: './mine?identity=interviewer&id='+id
         });
       }
       
     }
 
     onLoad() {
+      this.getJobLists();
     }
   }
 </script>

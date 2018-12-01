@@ -192,6 +192,10 @@ page{
       'booked-list':BookedListInterviewer
     }
 
+    constData={
+      id:''
+    }
+
     data = {
       statusBarHeight: state.system.systemInfo.statusBarHeight,
       pixel: state.system.pixel,
@@ -228,6 +232,7 @@ page{
 
     onLoad(option) {
       this.identity = option.identity;
+      this.constData.id = option.id;
       this.$apply();
     }
   }
