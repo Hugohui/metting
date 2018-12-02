@@ -463,7 +463,7 @@ page{
       const day = new Date().getDay();
       const curDate = new Date();
       let stringDate = null;
-      if(day == 6 || day == 7){
+      if(day == 6 || day == 0){
         this.currentWeek = 0;
         if(day == 6){
           stringDate = new Date(curDate.getTime() + 2*24*60*60*1000)

@@ -19,6 +19,8 @@ const getJobDetail = (params) => wxPost(params, meetingApi + 'interview/info');
 const getBookedJobLists = (params) => wxPost(params, meetingApi + 'interview/candidate_lists');
 const getJobTimeable = (params) => wxPost(params, meetingApi + 'interview/timeable');
 const submitBookTime = (params) => wxPost(params, meetingApi + 'interview/submit');
+const submitReserve = (params) => wxPost(params, meetingApi + 'interview/reserve');
+const getInterviewLists = (params) => wxPost(params, meetingApi + 'interview/interview_lists');
 
 export default {
     login,
@@ -33,5 +35,7 @@ export default {
     getJobDetail,
     getBookedJobLists,
     getJobTimeable,
-    submitBookTime
+    submitBookTime,
+    submitReserve,
+    getInterviewLists
 }

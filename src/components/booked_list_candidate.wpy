@@ -66,11 +66,11 @@
     <view class="items" wx:if="{{jobList.length>0}}">
       <repeat for="{{jobList}}">
         <view class="item">
-          <view class="title">某某公司</view>
+          <view class="title">{{item.company}}</view>
           <view class="candidate-list-content" @tap="toJobDetail">
-            <view class="job">CFO</view>
-            <view class="date">面试时间：<text>10:00-10:45</text></view>
-            <view class="phone">联系电话:13987654567</view>
+            <view class="job">{{item.post_name}}</view>
+            <view class="date">面试时间：<text>{{item.interview_time}}</text></view>
+            <view class="phone">联系电话:{{item.mobile}}</view>
             <view class="toDetail">
               <image src="../images/icon-arrow-right.png"/>
             </view>
@@ -106,7 +106,7 @@
      },
      toJobDetail(){
        wx.navigateTo({
-          url: './job_detail_candidate&type=booked'
+          url: './job_detail_candidate?type=booked'
         });
      }
     }

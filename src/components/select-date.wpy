@@ -1,0 +1,379 @@
+<style type="less">
+ .select-book-container{
+   width: 100%;
+   font-family: PingFangSC-Regular;
+   .select-time{
+     margin-top: 10rpx;
+     background-color: #FFF;
+     padding: 12rpx 24rpx 0 24rpx;
+     .title{
+       text-align: center;
+       font-size: 34rpx;
+       margin-bottom: 16rpx;
+     }
+     .select-day{
+       text-align: center;
+       height: 60rpx;
+       line-height: 60rpx;
+       font-size: 32rpx;
+       color: #145699;
+       position: relative;
+       .arrow{
+         position: absolute;
+         top: 0;
+         width: 60rpx;
+         height: 60rpx;
+         image{
+           width: 100%;
+           height: 100%;
+         }
+         &.left{
+           left: 0;
+         }
+         &.right{
+           right: 0;
+         }
+       }
+     }
+     .slide_select{
+       margin-top: 10rpx;
+       display: flex;
+       font-size: 32rpx;
+       color: #2A2A2A;
+       .left{
+         width: 102rpx;
+         text-align: center;
+         &>view{
+           margin-bottom: 20rpx;
+         }
+       }
+       .right{
+         flex: 1;
+         margin-left: 22rpx;
+         .head,.body{
+           display: flex;
+           &>view{
+             flex: 1;
+           }
+           .active{
+             color: #145699;
+           }
+         }
+         .body{
+           margin-top: 35rpx;
+           &>view{
+             height: 560rpx;
+             .inner{
+               width: 15rpx;
+               height: 100%;
+               margin: 0 auto;
+               background: #eee;
+               border-radius: 8rpx;
+               overflow: hidden;
+               margin-left: 40rpx;
+               .item{
+                 height: 64rpx;
+                 width: 100%;
+               }
+               .active{
+                 background: #145699;
+               }
+             }
+           }
+         }
+       }
+     }
+   }
+   .metting_duration{
+     margin-top: 10rpx;
+     background-color: #FFF;
+     padding: 16rpx 29rpx 16rpx 25rpx;
+     box-sizing: border-box;
+     .select-duration{
+       height: 94rpx;
+       display: flex;
+       &>view{
+         flex: 1;
+         image{
+           width:24rpx;
+           height: 12rpx;
+         }
+         overflow: hidden;
+         .title{
+           width: 160rpx;
+           float: left;
+           font-size: 36rpx;
+           height: 62rpx;
+           height: 62rpx;
+           margin-top: 8rpx;
+         }
+         .picker-view{
+           height: 62rpx;
+           width: 173rpx;
+           border: 2rpx solid #979797;
+           float: right;
+           padding: 9rpx 14rpx;
+           box-sizing: border-box;
+           font-size: 30rpx;
+           color: #16579A;
+           position: relative;
+           image{
+             width: 24rpx;
+             height: 12rpx;
+             position: absolute;
+             top: 50%;
+             right: 20rpx;
+             transform: translateY(-50%);
+           }
+         }
+       }
+     }
+     .submit{
+       height: 84rpx;
+       .btn{
+         width: 638rpx;
+         height: 100%;
+         border-radius: 42rpx;
+         background: linear-gradient(0deg, #E91216 0%, #F44346 100%);
+         margin: 0 auto;
+         text-align: center;
+         line-height: 84rpx;
+         color: #fff;
+         &.active{
+           background: #ccc;
+           color: #fff;
+         }
+       }
+     }
+   }
+ }
+</style>
+<template>
+  <view class="select-book-container">
+    <view class="select-time">
+      <view class="title">选择面试时间</view>
+      <view class="select-day">
+        <view class="arrow left" @tap="pretDay">
+          <image src="../images/icon-select-date-left.png"/>
+        </view>
+        <view class="arrow right" @tap="nextDay">
+          <image src="../images/icon-select-date-right.png"/>
+        </view>
+        {{currentTime}}
+      </view>
+      <view class="slide_select">
+        <view class="left">
+          <view>时间</view>
+          <view>9:00</view>
+          <repeat wx:for="{{9}}" wx:key="index">
+            <view>1{{index}}:00</view>
+          </repeat>
+        </view>
+        <view class="right">
+          <view class="head">
+            <repeat wx:for="{{5}}" wx:key="index">
+              <view class="{{currentWeek == index?'active':''}}">星期{{CHMap[index+1]}}</view>
+            </repeat>
+          </view>
+          <view class="body">
+            <repeat for="{{5}}" item="index1">
+              <view data-id="{{index1}}">
+                <view class="inner">
+                  <repeat for="{{9}}" item="index2">
+                    <view class="item {{status[index1][index2]?'active':''}}" data-week_index="{{index1}}" data-inner_index="{{index2}}" @tap="selectItem"></view>
+                  </repeat>
+                </view>
+              </view>
+            </repeat>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="metting_duration">
+      <view class="select-duration">
+        <view>
+          <view class="title">会议时长</view>
+          <view class="picker-view">
+            <picker bindchange="bindPickerChangeDu" value="{{'45分钟'}}" range="{{duration}}">
+              <view class="picker">
+                <view class="picker">{{duration[currentDu]}}分钟</view>
+              </view>
+            </picker>
+            <image src="../images/icon-arrow-down.png"/>
+          </view>
+        </view>
+        <view>
+          <view class="title" style="margin-left: 50rpx;width: 80rpx;">时区</view>
+          <view class="picker-view">
+            <picker bindchange="bindPickerChangeZone" value="{{18}}" range="{{timezoneText}}">
+              <view class="picker">
+                <view class="picker">{{timezoneText[currentZone]}}</view>
+              </view>
+            </picker>
+            <image src="../images/icon-arrow-down.png"/>
+          </view>
+        </view>
+      </view>
+      <view class="submit">
+        <view class="btn" @tap="submitTime" wx:if="{{canClick}}">确认</view>
+        <view class="btn active" wx:if="{{!canClick}}">已确认</view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import util from '@/utils/util'
+
+  export default class SelectDate extends wepy.component {
+    props = {
+      
+    }
+
+    components = {
+    }
+
+    data = {
+      duration: [30,45,60,90,120,150,180],
+      currentDu: 0,
+      timezone: [],
+      timezoneText: [],
+      currentZone: 18,
+      CHMap:['','一','二','三','四','五','六','七','八','九','十','十一','十二'],
+      currentTime: '2018-10-10',
+      currentWeek: 'no',
+      newDate: '',
+      status: {0:{},1:{},2:{},3:{},4:{}},
+      timeableArr: [],
+      timeMap: [
+        {start_time:'09:00:00',end_time:'10:00:00'},
+        {start_time:'10:00:00',end_time:'11:00:00'},
+        {start_time:'11:00:00',end_time:'12:00:00'},
+        {start_time:'12:00:00',end_time:'13:00:00'},
+        {start_time:'13:00:00',end_time:'14:00:00'},
+        {start_time:'14:00:00',end_time:'15:00:00'},
+        {start_time:'15:00:00',end_time:'16:00:00'},
+        {start_time:'16:00:00',end_time:'17:00:00'},
+        {start_time:'17:00:00',end_time:'18:00:00'}
+      ],
+      canClick: true
+    }
+
+    methods = {
+     bindPickerChangeDu(e){
+       this.currentDu = e.detail.value;
+       this.$apply();
+     },
+     bindPickerChangeZone(e){
+       this.currentZone = e.detail.value;
+       this.$apply();
+     },
+     submitTime(){
+        if(this.timeableArr.length == 0){
+         wx.showToast({
+           title: '请选择时间段',
+           icon: 'none'
+         });
+         return;
+       }
+       const result = {
+         duration: this.duration[this.currentDu],
+         timezone: this.timezone[this.currentZone],
+         timeable: this.timeableArr
+       }
+       this.$emit('submitTime',result);
+     },
+     selectItem(e){
+      const index = e.currentTarget.dataset.inner_index;
+      const weekIndex = e.currentTarget.dataset.week_index;
+      if(weekIndex == this.currentWeek){
+        this.status[this.currentWeek][index] = !this.status[this.currentWeek][index];
+        if(this.status[this.currentWeek][index]){
+          const obj = {
+            start_time: this.currentTime+' '+this.timeMap[index].start_time,
+            end_time: this.currentTime+' '+this.timeMap[index].end_time
+          }
+          this.timeableArr.push(obj);
+        }else{
+          for(let i=0;i<this.timeableArr.length;i++){
+            let ind = '';
+            if(this.timeableArr[i].start_time == (this.currentTime+' '+this.timeMap[index].start_time)){
+              ind = i;
+            }
+            this.timeableArr.splice(index,1);
+          }
+        }
+      }
+      this.$apply();
+     },
+     pretDay(){
+       this.getTime(-1);
+     },
+     nextDay(){
+       this.getTime(1);
+     },
+      changeBtn(data){
+        this.canClick = data;
+        this.$apply();
+      }
+    }
+
+    /**
+     * 获取选中日期的第n天
+     * @param n { Number } 前/后n天，前为负数，后为正数
+     * @return {string} 时间字符串
+     */
+    getTime(n){
+      if((n == -1 && this.currentWeek == 0)||(n == 1 && this.currentWeek == 4)){
+        return;
+      }
+      if(this.currentWeek == new Date().getDay()-1 && n == -1){
+        return;
+      }
+      const stringDate = new Date(this.newDate.getTime() + n*24*60*60*1000);
+      this.currentTime =  util.timeFormat(stringDate,"yyyy-MM-dd");
+      this.currentWeek+= n;
+      this.newDate = stringDate;
+      this.$apply();
+    }
+
+    onLoad(){
+      for(let i = -11;i<=12;i++){
+        if(i<0){
+          this.timezoneText.push('西'+this.CHMap[(-i)]+'区');
+          this.timezone.push(i);
+        }else if(i>0){
+          if(i == 12){
+            this.timezoneText.push('东西十二区');
+          }else{
+            this.timezoneText.push('东'+this.CHMap[i]+'区');
+          }
+          this.timezone.push(i);
+        }
+      }
+      const day = new Date().getDay();
+      const curDate = new Date();
+      this.currentTime = util.getCurrentTime().split(' ')[0];
+      let stringDate = null;
+      if(day == 6 || day == 0){
+        this.currentWeek = 0;
+        if(day == 6){
+          stringDate = new Date(curDate.getTime() + 2*24*60*60*1000)
+        }else{
+          stringDate = new Date(curDate.getTime() + 24*60*60*1000)
+        }
+      }else{
+        this.currentWeek = day - 1;
+        stringDate = curDate;
+      }
+      this.newDate = stringDate;
+      this.currentTime = util.timeFormat(stringDate,"yyyy-MM-dd")
+      for(let i = 0;i<5;i++){
+        for(let j = 0;j<10;j++){
+          this.status[i][j] = false;
+        }
+      }
+      this.$apply();
+    }
+  }
+</script>
