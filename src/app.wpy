@@ -40,7 +40,7 @@ export default class extends wepy.app {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: '#fff',
+      navigationBarTextStyle: 'white',
       navigationStyle: 'custom'
     },
     networkTimeout: {
