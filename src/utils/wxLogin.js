@@ -1,6 +1,6 @@
 import wepy from 'wepy';
 import api from '@/api/api'
-import { setUser } from '@/store/actions/user.redux'
+import { setUser } from '@/store/actions/user.redux.js'
 import { getStore } from 'wepy-redux'
 const store = getStore();
 /**
@@ -36,6 +36,8 @@ wx.getSetting({
                   userInfo:json.data.results,
                   loginType: 'wx'
                 }));
+                wx.setStorageSync('userInfo_v1.0',json.data.results);
+                wx.setStorageSync('loginType','wx');
                 wx.setStorage({
                   key:"userInfo_v1.0.0",
                   data:json.data.results

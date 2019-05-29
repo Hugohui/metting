@@ -147,8 +147,8 @@ page{
           <view class="basic-info">
             <view class="item">
               <view class="title">面试地址</view>
-              <view class="desc" @tap="selectLocation">{{address}}
-                <image src="../images/icon-select-location.png"/>
+              <view class="desc">{{jobDetail.address}}
+                <!-- <image src="../images/icon-select-location.png"/> -->
               </view>
             </view>
             <view class="item">
@@ -164,12 +164,6 @@ page{
         </view>
         <view wx:else>
           <booked-list />
-        </view>
-        <view class="bottom_tab">
-          <view class="{{currentIndex == 0?'active':''}}" @tap="toggleTab" data-index="0">时间预约</view>
-          <view class="{{currentIndex == 1?'active':''}}" @tap="toggleTab" data-index="1">已约管理
-            <view class="num" wx:if="{{unReadNum>0}}">{{unReadNum}}</view>
-          </view>
         </view>
       </view>
     </view>
@@ -187,7 +181,7 @@ page{
   const store = getStore()
   const state = store.getState()
 
-  export default class Mine extends wepy.page {
+  export default class SelectDateCandidate extends wepy.page {
     config = {
     }
     components = {
@@ -225,7 +219,6 @@ page{
         post:{
           user_id:store.getState().user.userInfo.user_id,
           interview_id: this.constData.id,
-          address: this.address,
           duration: param.duration,
           time_zone: param.timezone,
           timeable: JSON.stringify(param.timeable)
@@ -236,6 +229,7 @@ page{
           title: '已发送',
           icon: 'none'
         });
+        wx.setStorageSync('canClick1.0','false')
       }
       this.$apply();
     }
@@ -275,13 +269,6 @@ page{
 
     events = {
       submitTime(result){
-        if(this.address == '暂未定位'){
-          wx.showToast({
-            title: '请选择地址',
-            icon: 'none'
-          });
-          return;
-        }
         this.submitReserve(result);
         this.$invoke('select-date','changeBtn',false);
       }
@@ -295,6 +282,8 @@ page{
     onLoad(option) {
       this.identity = option.identity;
       this.constData.id = option.id;
+      console.log(this.constData.id);
+      
       this.getJobDetail();
       this.$apply();
     }

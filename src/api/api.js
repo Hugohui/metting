@@ -3,7 +3,7 @@ import {
 } from '@/utils/wxRequest';
   
 let env = "-dev" //-dev 或者 -test
-var meetingApi = 'http://meeting.test.dxkj.com/api/'
+var meetingApi = 'https://meeting.api.dxkj.com/api/'
 
 const versionName = 'v1.0.0'
 const login = (params) => wxPost(params, meetingApi + 'account/login');
@@ -21,6 +21,7 @@ const getJobTimeable = (params) => wxPost(params, meetingApi + 'interview/timeab
 const submitBookTime = (params) => wxPost(params, meetingApi + 'interview/submit');
 const submitReserve = (params) => wxPost(params, meetingApi + 'interview/reserve');
 const getInterviewLists = (params) => wxPost(params, meetingApi + 'interview/interview_lists');
+const interviewCancel = (params) => wxPost(params, meetingApi + 'interview/cancel');
 
 export default {
     login,
@@ -37,5 +38,6 @@ export default {
     getJobTimeable,
     submitBookTime,
     submitReserve,
-    getInterviewLists
+    getInterviewLists,
+    interviewCancel
 }

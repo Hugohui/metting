@@ -145,6 +145,33 @@
          }
        }
      }
+     .btn-group{
+        margin-top: 18rpx;
+        overflow: hidden;
+        padding-bottom: 25rpx;
+        .btn{
+          height: 83rpx;
+          line-height: 83rpx;
+          text-align: center;
+          font-size: 34rpx;
+          color: #fff;
+          border-radius: 42rpx;
+          float: left;
+          &.confirm{
+            width: 471rpx;
+            background:  linear-gradient(0deg, #0A4C90 0%, #2364A6 100%);
+            margin-right: 26rpx;
+          }
+          &.cancle{
+            width: 192rpx;
+            background:  linear-gradient(0deg, #E91216 0%, #F44346 100%);
+          }
+          &.active{
+            background: #ccc;
+            color: #fff;
+          }
+        }
+      }
    }
  }
 </style>
@@ -214,9 +241,19 @@
           </view>
         </view>
       </view>
-      <view class="submit">
+      <view class="submit" wx:if="{{type!='interview'}}">
         <view class="btn" @tap="submitTime" wx:if="{{canClick}}">确认</view>
         <view class="btn active" wx:if="{{!canClick}}">已确认</view>
+      </view>
+      <view wx:else>
+        <view class="btn-group" wx:if="{{canClick}}">
+          <view class="btn confirm" @tap="confirm">确认</view>
+          <view class="btn cancle" @tap="cancle">不合适</view>
+        </view>
+        <view class="btn-group" wx:else>
+          <view class="btn confirm active">确认</view>
+          <view class="btn cancle active">不合适</view>
+        </view>
       </view>
     </view>
   </view>
@@ -227,7 +264,7 @@
 
   export default class SelectDate extends wepy.component {
     props = {
-      
+      type: String
     }
 
     components = {

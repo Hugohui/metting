@@ -75,11 +75,11 @@
       <view @tap="toggleBookedTab" data-index="1" class="{{currentIndex == 1?'active':''}}">已面试</view>
     </view>
     <view class="items">
-      <repeat for="{{jobList}}" key="index" item="item1">
+      <repeat for="{{5}}" key="index" item="item1">
         <view class="item">
           <view class="title" style="color:{{currentIndex == 0?'#EE282C':'#999'}}">{{item1.date}}</view>
-          <repeat for="{{item1.subList}}" key="index" item="item2">
-            <view class="content">
+          <repeat for="{{3}}" key="index" item="item2">
+            <view class="content" @tap="toDetail">
             <view class="job" style="color:{{currentIndex == 0?'#222':'#999'}}">CFO</view>
             <view class="date">候选人:{{item2.post_name}}<text>面试时间{{item2.time}}</text></view>
             <view class="phone">联系电话:{{item.mobile}}</view>
@@ -97,7 +97,7 @@
   import wepy from 'wepy'
   import api from '@/api/api'
   import { getStore, connect } from 'wepy-redux'
-  import { setUser } from '@/store/actions/user.redux'
+  import { setUser } from '@/store/actions/user.redux.js'
   const store = getStore()
   export default class BookedListInterviewer extends wepy.component {
     props = {
@@ -138,6 +138,11 @@
        this.currentIndex = e.currentTarget.dataset.index;
        this.getInterviewLists();
        this.$apply();
+     },
+     toDetail(){
+       wx.navigateTo({
+         url: './job_detail_interview'
+       });
      }
     }
 

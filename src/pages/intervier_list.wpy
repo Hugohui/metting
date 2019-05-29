@@ -249,8 +249,11 @@ page{
         this.$apply();
       }
     }
-    onLoad() {
+    onShow(){
       this.getInterviewList();
+    }
+    onLoad() {
+      
     }
   }
 </script>

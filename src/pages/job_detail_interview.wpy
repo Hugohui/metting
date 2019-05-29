@@ -119,7 +119,6 @@ page{
             }
           }
           .week{
-            margin-top: 67rpx;
             .header{
               display: flex;
               justify-content: space-between;
@@ -143,36 +142,6 @@ page{
                     width: 100%;
                     height: 100%;
                   }
-                }
-              }
-            }
-            .body{
-              display: flex;
-              justify-content: space-between;
-              flex-wrap: wrap;
-              &>view{
-                width: 170rpx;
-                height: 80rpx;
-                border: 2rpx solid #979797;
-                margin-bottom: 20rpx;
-                line-height: 80rpx;
-                text-align: center;
-                font-size: 26rpx;
-                color: #000;
-                box-sizing: border-box;
-                &.placeholder{
-                  height: 2rpx;
-                  border: none;
-                }
-                &.active{
-                  background-color: #ED2529;
-                  color: #fff;
-                  border-color: #ED2529;
-                }
-                &.unBook{
-                  background-color: #EEE;
-                  color: #B2B2B2;
-                  border:none;
                 }
               }
             }
@@ -225,68 +194,15 @@ page{
         <view>
           <view class="basic-info">
             <view class="item">
-              <view class="title">具体时间</view>
-              <view class="desc red-text">{{currentDataText}}</view>
-            </view>
-            <view class="item" wx:if="{{type == 'booked'}}">
               <view class="title">面试地址</view>
-              <view class="desc">{{jobDetail.address}}</view>
+              <view class="desc red-text">{{jobDetail.address}}</view>
             </view>
             <view class="item">
-              <view class="title">面试岗位</view>
-              <view class="desc">{{jobDetail.post_name}}</view>
-            </view>
-            <view class="item">
-              <view class="title">候选人</view>
-              <view class="desc">{{jobDetail.interviewer_name}}</view>
-            </view>
-            <view class="item">
-              <view class="title">联系电话</view>
-              <view class="desc">{{jobDetail.candidate_phone}}</view>
+              <view class="title">面试时间</view>
+              <view class="desc">{{jobDetail.time}}</view>
             </view>
           </view>
-          <view class="select-time">
-            <view class="title">选择面试时间</view>
-            <view class="status">
-              <view>
-                <view class="color first"></view><text>已约</text>
-              </view>
-              <view>
-                <view class="color"></view><text>可约</text>
-              </view>
-              <view>
-                <view class="color last"></view><text>已选</text>
-              </view>
-            </view>
-            <view class="week">
-              <view class="header">
-                <repeat wx:for="{{5}}" wx:key="index">
-                  <view class="{{currentWeek == item?'active':''}}" @tap="selectWeek" data-index="{{item}}">星期{{weekMap[item]}}
-                    <view class="arrow_down" wx:if="{{currentWeek == item}}">
-                      <image src="../images/arrow_week_down.png"/>
-                    </view>
-                  </view>
-                </repeat>
-              </view>
-              <view class="body">
-                <repeat wx:for="{{JobTime}}" wx:key="index">
-                  <view class="{{item.status == 0?'unBook':''}}" wx:if="{{item.status == 0}}">{{item.text}}</view>
-                  <view @tap="selectDateItem" data-text="{{item.text}}" data-time="{{[item.start_time,item.end_time]}}" data-index="{{index}}" data-id="{{item.id}}" class="{{currentDateItem == index?'active':''}}" wx:else>{{item.text}}</view>
-                </repeat>
-                <repeat wx:for="{{4-dateList.length%4}}" wx:key="index">
-                  <view class="placeholder"></view>
-                </repeat>
-              </view>
-              <view class="btn-group" wx:if="{{canClick}}">
-                <view class="btn confirm" @tap="confirm">确认</view>
-                <view class="btn cancle" @tap="cancle">不合适</view>
-              </view>
-              <view class="btn-group" wx:else>
-                <view class="btn confirm active">确认</view>
-                <view class="btn cancle active">不合适</view>
-              </view>
-            </view>
-          </view>
+          <select-date :type="selectType"/>
         </view>
       </view>
     </view>
@@ -297,6 +213,7 @@ page{
 <script>
   import wepy from 'wepy'
   import util from '@/utils/util'
+  import SelectDate from '@/components/select-date'
   import api from '@/api/api'
   import cancleCandidate from '@/components/cancle_candidate'
   import BookedListCandidate from '@/components/booked_list_candidate'
@@ -304,11 +221,12 @@ page{
   const store = getStore()
   const state = store.getState()
 
-  export default class JobDetailCandidate extends wepy.page {
+  export default class JobDetailInterview extends wepy.page {
     config = {
     }
     components = {
       'cancle-candidate':cancleCandidate,
+      'select-date': SelectDate,
       'booked-list':BookedListCandidate
     }
 
@@ -393,7 +311,8 @@ page{
       newDate: null,
       lastDateItem: 'no',
       lastWeek: 'no',
-      canClick: true
+      canClick: true,
+      selectType: 'interview'
     }
 
     methods = {

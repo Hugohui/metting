@@ -9,7 +9,7 @@
 		"nodeModules": true
 	},
 	"compileType": "miniprogram",
-	"appid": "wx5e2758ac42a14693",
+	"appid": "wx160b088751b3be02",
 	"projectname": "meeting",
 	"miniprogramRoot": "dist/",
 	"libVersion": "2.4.1",
@@ -30,7 +30,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 10,
+			"current": 12,
 			"list": [
 				{
 					"id": -1,
@@ -95,7 +95,19 @@
 				{
 					"id": -1,
 					"name": "test",
-					"pathName": "pages/test"
+					"pathName": "pages/test",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "job_detail_interview",
+					"pathName": "pages/job_detail_interview",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "job_detail_interview",
+					"pathName": "pages/job_detail_interview"
 				}
 			]
 		}

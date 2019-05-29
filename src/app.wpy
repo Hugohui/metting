@@ -32,7 +32,9 @@ export default class extends wepy.app {
       'pages/location',
       'pages/candidate_date',
       'pages/job_detail_candidate',
-      'pages/test'
+      'pages/test',
+      'pages/candidate_selece_date',
+      'pages/job_detail_interview'
     ],
     window: {
       backgroundTextStyle: 'light',

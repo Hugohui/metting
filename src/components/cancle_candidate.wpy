@@ -79,7 +79,10 @@
 </template>
 <script>
   import wepy from 'wepy'
-
+  import api from '@/api/api'
+  import { getStore, connect } from 'wepy-redux'
+  import { setUser } from '@/store/actions/user.redux.js'
+  const store = getStore()
   export default class CancleCandidate extends wepy.component {
     props = {
       
@@ -88,23 +91,55 @@
     components = {
     }
 
+    /**
+     * 取消面试
+     */
+    async interviewCancel(){
+      let json = await api.interviewCancel({
+        post:{
+          user_id:store.getState().user.userInfo.user_id,
+          category_id:store.getState().user.userInfo.category_id,
+          interview_id: this.interview_id,
+          cancel_msg: this.Msg[this.currentReasonIndex]
+        }
+      })
+      if(json.data.err_no == 0){
+        this.isShow = false;
+        wx.showToast({
+          title: '已发送',
+          icon: 'none'
+        });
+        this.$emit('cancleInterviewOk');
+      }
+      this.$apply();
+    }
+
     data = {
       currentReasonIndex: 0,
-      isShow: false
+      isShow: false,
+      Msg:['临时会议安排，联系顾问','不想参加面试，联系顾问'],
+      interview_id: ''
     }
 
     methods = {
-     setData(){
+     setData(data){
        this.isShow = true;
+       this.interview_id = data;
        this.$apply();
      },
      chooseReason(e){
        this.currentReasonIndex = e.currentTarget.dataset.index;
-       
      },
      confirmReason(){
-       this.isShow = false
-       console.log('currentReasonIndex===='+this.currentReasonIndex);
+       if(this.currentReasonIndex == 2){
+         this.isShow = false;
+         this.$apply();
+         wx.navigateTo({
+           url: './candidate_selece_date?id='+this.interview_id
+         });
+       }else{
+         this.interviewCancel();
+       }
      }
     }
 

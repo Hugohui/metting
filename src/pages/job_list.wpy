@@ -180,8 +180,12 @@ page{
       
     }
 
+    onShow(){
+      this.getJobLists();    
+    }
+
+
     onLoad() {
-      this.getJobLists();
     }
   }
 </script>

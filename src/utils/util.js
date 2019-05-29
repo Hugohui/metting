@@ -247,7 +247,7 @@ function setNetwork(){
 }
 
 function isEmpty(obj){
-    if(typeof obj == "undefined" || obj == null || obj.replace(/(^\s*)|(\s*$)/g, "") == ""||JSON.stringify(obj) == "{}"){
+    if(typeof obj == "undefined" || obj == null || obj == '' ||JSON.stringify(obj) == "{}"){
         return true;
     }else{
         return false;
